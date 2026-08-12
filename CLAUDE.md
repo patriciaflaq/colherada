@@ -71,3 +71,12 @@ o grid renderiza a contagem esperada de receitas.
 Abrir o `index.html` direto por `file://` **não serve como teste**: em alguns browsers o
 `localStorage` lança `SecurityError` nessa origem, o script aborta na primeira linha que o
 acessa e a lista aparece vazia. É falha do ambiente, não do código.
+
+## Mudanças visuais
+
+Qualquer alteração de aparência — cores, tamanhos de fonte, espaçamento — precisa ser
+**servida em localhost e revisada antes do commit**. Descrever a mudança em texto não
+substitui olhar a tela.
+
+O fluxo é: aplicar a alteração, subir o servidor, avisar que está no ar para revisão, e
+**esperar aprovação explícita**. Só commitar depois disso.

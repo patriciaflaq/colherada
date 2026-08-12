@@ -25,7 +25,7 @@
   --r:12px;--r-sm:8px;
   --mono:'JetBrains Mono',ui-monospace,monospace;
   --ui:'Inter Tight',system-ui,sans-serif;
-  --display:var(--display);
+  --display:'Fraunces',Georgia,serif;
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 html{background:var(--bg);}
@@ -480,7 +480,7 @@ main{max-width:1100px;margin:0 auto;padding:1.25rem;padding-bottom:calc(90px + v
 </div>
 
 <header>
-  <div class="logo">Colher<em>ada</em><span class="logo-sub" id="t-logo-sub">my kitchen</span></div>
+  <div class="logo" onclick="goHome()" style="cursor:pointer" title="Colherada">Colher<em>ada</em><span class="logo-sub" id="t-logo-sub">my kitchen</span></div>
   <div class="header-tabs">
     <button class="tab-btn active" onclick="showView('browse',this)" id="tab-browse">🍴 <span data-t="browse">Browse</span></button>
     <button class="tab-btn" onclick="showView('suggest',this)" id="tab-suggest">✦ <span data-t="suggest">Suggest</span></button>
@@ -774,7 +774,30 @@ main{max-width:1100px;margin:0 auto;padding:1.25rem;padding-bottom:calc(90px + v
 <div class="toast" id="toast"></div>
 
 <script>
-if('serviceWorker' in navigator) window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+if('serviceWorker' in navigator){
+  let swReg=null, reloading=false;
+  window.addEventListener('load',()=>{
+    navigator.serviceWorker.register('./sw.js').then(reg=>{
+      swReg=reg;
+      // versao nova encontrada: assim que estiver pronta, recarrega
+      reg.addEventListener('updatefound',()=>{
+        const nw=reg.installing;
+        if(!nw) return;
+        nw.addEventListener('statechange',()=>{
+          if(nw.state==='installed' && navigator.serviceWorker.controller && !reloading){
+            reloading=true;
+            location.reload();
+          }
+        });
+      });
+    }).catch(()=>{});
+  });
+  // checa por atualizacao sempre que o app volta para frente
+  document.addEventListener('visibilitychange',()=>{
+    if(document.visibilityState==='visible' && swReg) swReg.update().catch(()=>{});
+  });
+  window.addEventListener('focus',()=>{ if(swReg) swReg.update().catch(()=>{}); });
+}
 
 // ── TRANSLATIONS ──
 const T = {
@@ -1046,7 +1069,8 @@ const NAMES = {
 90:["Mini Pizzas com Massa de Cottage","Mini Pizzas with Cottage Cheese Crust"],
 91:["Batata Doce Recheada com Casca de Chocolate Crocante","Hardshell Sweet Potato Bake"],
 92:["Massa de Biscoito Proteica no Micro-ondas","Microwave Protein Cookie Dough"],
-93:["Salmorejo","Salmorejo"]
+93:["Salmorejo","Salmorejo"],
+95:["Escondidinho de Mignon Suíno","Pork Tenderloin Shepherd's Pie"]
 };
 
 // Conteúdo bilíngue. Campos _en são opcionais: sem eles, cai no português.
@@ -1168,6 +1192,7 @@ const SEED_RECIPES=[
   {id:91,name:"Batata Doce Recheada com Casca de Chocolate Crocante",emoji:"🍠",meal:"Dessert",diet:"High Protein",time:50,servings:1,notes:"Da @dinero.wellness. Rende 2 metades de batata doce recheadas que juntas formam 1 porção. Calda recomendada: alulose líquida tipo Wholesome Yum (Besti Monk Fruit Allulose Blend) — é mais bem tolerada pelo intestino que caldas à base de dextrina resistente, que concentram uma quantidade grande de fibra numa colherada só e podem causar gases e inchaço. Deixe a batata doce esfriar um pouco antes de bater, para não talhar o iogurte. A casca de chocolate só fica crocante depois de gelar ou congelar até firmar.",url:"",source:"saved",protein:35,carbs:39,fat:5,calories:292,fav:false,ingredients:["100g batata doce", "50g iogurte grego sabor baunilha", "1 dose de whey protein (~30g)", "20g cacau em pó", "60g calda sem açúcar tipo maple (1/4 xícara) — de preferência à base de alulose", "Adoçante 0 kcal a gosto (para o recheio e para a casca)", "Sal grosso a gosto, para finalizar"],steps:["Asse ou leve ao micro-ondas a batata doce até ficar macia", "Corte ao meio e retire o miolo com uma colher, reservando as cascas", "Bata o miolo da batata doce com o iogurte, o whey e o adoçante até ficar liso", "Recheie as duas cascas com a mistura", "Numa tigela separada, misture o cacau, a calda sem açúcar e o adoçante", "Despeje a mistura de chocolate por cima de cada metade — é isso que forma a casca crocante", "Finalize com sal grosso", "Leve à geladeira ou ao freezer até a casca firmar e rachar"],ingredients_en:["100g sweet potato", "50g vanilla Greek yogurt", "1 scoop whey protein (~30g)", "20g cocoa powder", "60g sugar-free maple-style syrup (1/4 cup) — allulose-based preferred", "0 cal sweetener, to taste (for the filling and the shell)", "Coarse salt, for topping"],steps_en:["Bake or microwave the sweet potato until soft", "Cut in half and scoop out the insides with a spoon, keeping the skins", "Blend the sweet potato flesh with the yogurt, whey, and sweetener until smooth", "Spoon the mixture back into the skins", "In a separate bowl, mix the cocoa powder, sugar-free syrup, and sweetener", "Pour the chocolate mixture over each half — this becomes the hardshell", "Sprinkle with coarse salt", "Chill or freeze until the top firms up and cracks"],notes_en:"From @dinero.wellness. Makes 2 stuffed sweet potato halves that together make 1 serving. Recommended syrup: an allulose-based one like Wholesome Yum (Besti Monk Fruit Allulose Blend) — it tends to be gentler on the gut than syrups built on resistant dextrin, which pack a large fiber dose into a single spoonful and can cause gas and bloating. Let the sweet potato cool slightly before blending so the yogurt doesn't curdle. The chocolate shell only turns crackly after chilling or freezing until firm."},
   {id:92,name:"Massa de Biscoito Proteica no Micro-ondas",emoji:"🍪",meal:"Dessert",diet:"High Protein",time:5,servings:1,notes:"De @j.newtrition. O original pedia farinha comum; troquei por farinha de amêndoas. As gotas de chocolate também foram trocadas: o original usava Lily's (stevia + eritritol), aqui é chocolate amargo comum, com açúcar de verdade. Os 15g de adoçante 0 kcal são o ponto de partida — como o chocolate comum já traz um pouco de doçura própria, ajuste essa quantidade a gosto. Macros recalculados do zero para essas duas trocas. Potência de micro-ondas varia bastante — comece com 1 minuto e vá completando de 10 em 10 segundos até cozinhar por dentro sem ressecar.",url:"",source:"saved",protein:19,carbs:16,fat:23,calories:339,fav:false,ingredients:["ÚMIDOS:", "1 ovo", "60g iogurte grego desnatado natural", "10g pasta de caju (ou outra pasta de oleaginosa)", "Um borrifo de extrato de baunilha", "SECOS:", "20g farinha de amêndoas", "15g adoçante 0 kcal", "Uma pitada de fermento em pó", "Uma pitada de bicarbonato de sódio", "10g gotas de chocolate amargo comum"],steps:["Misture os ingredientes úmidos numa tigela pequena que possa ir ao micro-ondas", "Acrescente os ingredientes secos e misture até incorporar", "Polvilhe as gotas de chocolate por cima", "Leve ao micro-ondas por 1 minuto e 20 segundos, ou até cozinhar por dentro", "Deixe descansar 1 minuto e sirva"],ingredients_en:["WET:", "1 egg", "60g plain nonfat Greek yogurt", "10g cashew butter (or nut butter of choice)", "Splash of vanilla extract", "DRY:", "20g almond flour", "15g zero cal sweetener", "Pinch of baking powder", "Pinch of baking soda", "10g regular dark chocolate chips"],steps_en:["Mix the wet ingredients together in a small microwave-safe bowl", "Add in the dry ingredients and mix until combined", "Sprinkle the chocolate chips on top", "Microwave for 1 minute 20 seconds, or until cooked through", "Let rest for 1 minute and serve"],notes_en:"From @j.newtrition. The original called for all-purpose flour; swapped for almond flour. The chocolate chips were also swapped: the original used Lily's (stevia + erythritol), here it's regular dark chocolate chips, with real sugar. The 15g of zero-cal sweetener is a starting point — since regular chocolate already brings some sweetness of its own, adjust that amount to taste. Macros recalculated from scratch for both swaps. Microwave power varies a lot — start with 1 minute and add in 10-second increments until cooked through without drying out."},
   {id:93,name:"Salmorejo",emoji:"🍅",meal:"Lunch",diet:"Vegetarian",time:20,servings:4,notes:"Salmorejo espanhol clássico, com ovo batido na massa para dar corpo. Azeite reduzido de 100ml para 70ml para baixar a gordura, mantendo a textura sedosa — quem segura o corpo da sopa é principalmente a polpa do tomate batida em alta velocidade, não o ovo cozido (a lecitina que emulsiona fica presa na gema depois que ela cozinha, então o ovo ajuda pouco nisso). Ainda assim é uma sopa mais gordurosa do que proteica: os 3 ovos divididos em 4 porções dão pouca proteína por pessoa. Tomates sem sementes deixam a sopa menos aquosa e com sabor mais concentrado. Gele bem antes de servir — precisa de pelo menos 1-2 horas na geladeira. Os itens de ‘para finalizar’ (chips de presunto, azeite extra, pimenta, pão torrado) não entram no cálculo de macros por não terem quantidade definida na receita original.",url:"",source:"saved",protein:7,carbs:11,fat:20,calories:246,fav:false,ingredients:["1kg tomates maduros, sem sementes de preferência", "3 ovos cozidos", "70ml azeite de oliva extra virgem", "30ml vinagre de jerez ou de vinho tinto", "5g sal de cominho (1 colher de chá) — ou um mix de cominho e cúrcuma", "Água a gosto, se quiser a sopa mais líquida", "PARA FINALIZAR:", "Chips de presunto", "Azeite", "Pimenta", "Pão torrado"],steps:["Cozinhe os ovos até ficarem duros, descasque e deixe esfriar", "Bata os tomates, os ovos, o azeite, o vinagre e o sal de cominho no liquidificador até ficar completamente liso", "Ajuste a consistência com água, se quiser a sopa mais líquida", "Leve à geladeira por pelo menos 1-2 horas antes de servir, bem gelada", "Sirva com chips de presunto, um fio de azeite, pimenta e pão torrado por cima"],ingredients_en:["1kg ripe tomatoes, deseeded if preferred", "3 hard-boiled eggs", "70ml extra virgin olive oil", "30ml sherry vinegar or red wine vinegar", "1 tsp cumin salt — or a cumin and turmeric mix", "Water to taste, if you want a thinner soup", "TO FINISH:", "Ham chips", "Olive oil", "Black pepper", "Toasted bread"],steps_en:["Boil the eggs until hard-cooked, peel, and let cool", "Blend the tomatoes, eggs, olive oil, vinegar, and cumin salt until completely smooth", "Adjust the consistency with water if you want a thinner soup", "Refrigerate for at least 1-2 hours before serving, well chilled", "Serve with ham chips, a drizzle of olive oil, black pepper, and toasted bread on top"],notes_en:"Classic Spanish salmorejo, with egg blended into the base for body. Olive oil cut from 100ml to 70ml to bring down the fat while keeping the silky texture — what actually holds the body of the soup is mostly the tomato pulp blended at high speed, not the boiled egg (the lecithin that emulsifies stays locked inside the yolk once it is cooked, so the egg helps only a little with that). It is still more of a fat-forward soup than a protein one: the 3 eggs split across 4 servings do not add up to much protein per person. Deseeded tomatoes make a less watery soup with more concentrated flavor. Chill well before serving — it needs at least 1-2 hours in the fridge. The ‘to finish’ items (ham chips, extra olive oil, pepper, toasted bread) are not included in the macro calculation since the original recipe did not specify quantities."},
+  {id:95,name:"Escondidinho de Mignon Suíno",emoji:"🥘",meal:"Dinner",diet:"High Protein",time:80,servings:4,notes:"Do @lucaslacerdanutri. Sem alho. Macros oficiais do post, porção de 400g; a mussarela do gratinado (15g por porção) entra por cima desses valores, somando ~45 kcal, 3g de proteína e 3g de gordura a cada porção. A marinada é descartada depois das 12h, então a cebola roxa e o líquido não entram no cálculo de macros. Variação: 120ml (meio copo) de vinho branco ou cerveja na marinada, seja no lugar do vinagre de maçã ou somado a ele. A marinada de 12h na geladeira é o que dá sabor à carne — não pule. Os 40 minutos são contados depois que a panela pega pressão. Batata asterix ou binge rendem purê mais sedoso que a batata comum.",url:"",source:"instagram",protein:42,carbs:43,fat:9,calories:430,fav:false,ingredients:["MARINADA (descartada após marinar):", "700g filé mignon suíno", "5g sal (1 colher de chá)", "2g páprica defumada (1 colher de chá)", "2g pimenta-do-reino (1 colher de chá)", "30g vinagre de maçã (2 colheres de sopa) — ou 120ml de vinho branco ou cerveja", "30g molho inglês (2 colheres de sopa)", "15g mostarda (1 colher de sopa)", "Cebola roxa a gosto", "PURÊ:", "1kg batata asterix ou binge", "300ml leite desnatado", "5g sal (1 colher de chá)", "PARA GRATINAR:", "60g mussarela ralada (15g por porção)"],steps:["Corte o filé mignon suíno em pedaços e coloque num saco tipo zip lock com o sal, a páprica defumada, a pimenta-do-reino, o vinagre de maçã (ou o vinho branco/cerveja), o molho inglês, a mostarda e a cebola roxa", "Feche o saco, misture bem e deixe marinar por 12 horas na geladeira", "Escorra e descarte a marinada com a cebola", "Sele a carne na panela de pressão até dourar", "Acrescente água e cozinhe por 40 minutos contados depois que a panela pegar pressão", "Enquanto isso, cozinhe as batatas, amasse e misture com o leite desnatado e o sal até formar um purê liso", "Desfie a carne cozida", "Coloque a carne desfiada num refratário e cubra com o purê de batatas", "Polvilhe a mussarela por cima e leve ao forno para gratinar até dourar"],ingredients_en:["MARINADE (discarded after marinating):", "700g pork tenderloin", "5g salt (1 tsp)", "2g smoked paprika (1 tsp)", "2g black pepper (1 tsp)", "30g apple cider vinegar (2 tbsp) — or 120ml white wine or beer", "30g Worcestershire sauce (2 tbsp)", "15g mustard (1 tbsp)", "Red onion to taste", "MASHED POTATO:", "1kg Asterix or Bintje potatoes", "300ml skim milk", "5g salt (1 tsp)", "TO GRATINATE:", "60g shredded mozzarella (15g per serving)"],steps_en:["Cut the pork tenderloin into pieces and put it in a zip lock bag with the salt, smoked paprika, black pepper, apple cider vinegar (or the white wine/beer), Worcestershire sauce, mustard and red onion", "Seal the bag, mix well and marinate for 12 hours in the fridge", "Drain and discard the marinade along with the onion", "Sear the meat in a pressure cooker until browned", "Add water and cook for 40 minutes, counted from the moment the cooker comes up to pressure", "Meanwhile, boil the potatoes, mash them and mix with the skim milk and salt until smooth", "Shred the cooked meat", "Put the shredded meat in a baking dish and cover with the mashed potatoes", "Sprinkle the mozzarella on top and bake until golden and bubbling"],notes_en:"From @lucaslacerdanutri. No garlic. Official macros from the post, 400g serving; the mozzarella for the gratin (15g per serving) sits on top of those figures, adding about 45 kcal, 3g of protein and 3g of fat per serving. The marinade is discarded after the 12 hours, so the red onion and the liquid don't count toward the macros. Variation: 120ml (half a cup) of white wine or beer in the marinade, either replacing the apple cider vinegar or in addition to it. The 12-hour marinade in the fridge is what gives the meat its flavour — don't skip it. The 40 minutes are counted from the moment the cooker comes up to pressure. Asterix or Bintje potatoes make a silkier mash than regular ones."},
   {id:9,name:"Frozen Yogurt Bark — PB & J",emoji:"🫐",meal:"Snack",diet:"High Protein",time:15,servings:4,notes:"Use framboesas ou amoras. Amasse as frutas, não bata.",url:"",source:"saved",protein:14,carbs:10,fat:10,calories:178,fav:false,ingredients:["400g iogurte grego integral","30g pasta de amendoim natural","80g framboesas ou amoras frescas","15g hemp hearts ou sementes de chia"],steps:["Forre uma assadeira com papel manteiga","Amasse grosseiramente as framboesas com um garfo","Misture o iogurte com a pasta de amendoim","Espalhe em camada de ~1cm","Distribua as frutas por cima","Polvilhe os hemp hearts ou chia","Congele por mínimo 2 horas — quebre em pedaços e sirva direto do freezer"],ingredients_en:["400g full-fat Greek yogurt", "30g natural peanut butter", "80g fresh raspberries or blackberries", "15g hemp hearts or chia seeds"],steps_en:["Line a baking sheet with parchment", "Roughly mash the raspberries with a fork", "Mix the yogurt with the peanut butter", "Spread into a ~1cm layer", "Scatter the fruit over the top", "Sprinkle the hemp hearts or chia", "Freeze for at least 2 hours — break into pieces and serve straight from the freezer"],notes_en:"Use raspberries or blackberries. Mash the fruit, don't blend it."}
 ];
 
@@ -1181,7 +1206,7 @@ let activeExtractTab='text',selectedPhotoBase64=null,editingRecipeId=null;
 // ── MERGE VERSIONADO DO SEED ──
 // Incrementar SEED_VERSION sempre que receitas novas forem adicionadas ao SEED_RECIPES.
 // O merge insere apenas o que não existe e nunca sobrescreve edições, favoritos ou receitas criadas no app.
-const SEED_VERSION = 33;
+const SEED_VERSION = 37;
 let deletedSeeds = JSON.parse(localStorage.getItem('colherada-deleted')||'[]');
 let seedMergeCount = 0;
 
@@ -1218,6 +1243,20 @@ function save(){
 
 function setActiveNav(id){document.querySelectorAll('.bottom-nav-btn').forEach(b=>b.classList.remove('active'));document.getElementById(id)?.classList.add('active');}
 
+function goHome(){
+  // fecha modo cozinha, modais abertos e volta para a lista de receitas
+  const ov=document.getElementById('cooking-overlay');
+  if(ov&&ov.classList.contains('show')){ stopCookingTimer(); ov.classList.remove('show'); }
+  document.querySelectorAll('.modal-overlay.open').forEach(m=>m.classList.remove('open'));
+  document.body.style.overflow='';
+  lastDetailId=null;
+  showView('browse');
+  const nb=document.getElementById('nav-browse'); if(nb) setActiveNav('nav-browse');
+  const tb=document.getElementById('tab-browse');
+  if(tb){ document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active')); tb.classList.add('active'); }
+  window.scrollTo(0,0);
+}
+
 function showView(name,btn){
   document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
@@ -1231,6 +1270,7 @@ function showView(name,btn){
 }
 
 // ── BROWSE ──
+let lastDetailId=null;      // receita aberta no detalhe (p/ voltar)
 let activeFilter=null;      // categoria (meal/diet)
 let activeSmart=null;       // atalho: fav | protein | quick | cooked
 
@@ -1402,10 +1442,11 @@ function openDetail(id){
     </div>
     <div class="dt-acts sub">
       <button class="btn-secondary" onclick="promptAddToPlanner(${r.id});closeModal('detail-modal')">${t('plan-btn')}</button>
-      <button class="btn-secondary" onclick="addToShoppingList(${r.id});closeModal('detail-modal')">${t('shop-btn')}</button>
+      <button class="btn-secondary" onclick="addToShoppingList(${r.id})">${t('shop-btn')}</button>
       <button class="btn-secondary" onclick="shareRecipe(${r.id})">${t('share-btn')}</button>
       <button class="btn-secondary" onclick="openEditModal(${r.id});closeModal('detail-modal')">${t('edit-btn')}</button>
     </div>`;
+  lastDetailId = r.id;
   document.getElementById('detail-modal').classList.add('open');
 }
 
@@ -1691,11 +1732,21 @@ async function aiPlanWeek(){
 }
 
 // ── SHOPPING LIST ──
+function isSectionHeader(txt){
+  const t=(txt||'').trim();
+  if(!t) return true;
+  // "MARINADA:", "PARA O PURÊ:", "CRUST:" — cabecalho, nao é item de compra
+  if(/:$/.test(t) && t===t.toUpperCase()) return true;
+  return false;
+}
+
 function addToShoppingList(id){
-  const r=recipes.find(x=>x.id===id);if(!r||!r.ingredients?.length)return;
+  const r=recipes.find(x=>x.id===id);if(!r)return;
+  const ings=(rIngredients(r)||[]).filter(i=>!isSectionHeader(i));
+  if(!ings.length)return;
   const existing=shoppingList.find(s=>s.recipeId===id);
   if(existing){showToast(lang==='pt'?'Receita já está na lista!':'Recipe already in list!');return;}
-  shoppingList.push({recipeId:id,recipeName:rName(r),emoji:r.emoji||'🍴',items:r.ingredients.map(ing=>({text:ing,checked:false}))});
+  shoppingList.push({recipeId:id,recipeName:rName(r),emoji:r.emoji||'🍴',items:ings.map(ing=>({text:ing,checked:false}))});
   save();showToast(t('shopping-added'));
 }
 
@@ -2310,6 +2361,8 @@ function closeCookingMode() {
   stopCookingTimer();
   document.getElementById('cooking-overlay').classList.remove('show');
   document.body.style.overflow = '';
+  // volta para a receita de onde veio
+  if (lastDetailId != null) openDetail(lastDetailId);
 }
 
 function toggleCookingIngredients() {

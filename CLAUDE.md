@@ -9,8 +9,8 @@ colherada.com.
 Valem para toda receita, sem exceção, tanto em receitas novas quanto em edições.
 
 - **Sem alho.** Nenhuma receita leva alho. Alho-poró é permitido.
-- **Sistema métrico sempre.** Gramas e mililitros para quantidades, °C para temperatura.
-  Nunca oz, lb ou °F, nem entre parênteses como conversão.
+- **Gramas, ml e °C são obrigatórios.** Xícaras, colheres e scoops podem aparecer junto,
+  como complemento. O que nunca entra é oz, lb e °F — esses sempre convertidos.
 - **Adoçantes:** apenas alulose, monk fruit e stevia. Nenhum outro.
 - **Português brasileiro** nos campos de receita (`name`, `notes`, `ingredients`, `steps`).
   Os campos `_en` são a tradução para inglês.
@@ -42,9 +42,9 @@ salvos. Sem o passo 4 o service worker continua servindo o HTML antigo do cache.
 
 | | Próximo |
 |---|---|
-| id de receita | **100** |
-| `SEED_VERSION` | **42** |
-| `CACHE_NAME` | **v40** |
+| id de receita | **107** |
+| `SEED_VERSION` | **49** |
+| `CACHE_NAME` | **v41** |
 
 Atualizar esta tabela junto com cada receita inserida.
 
@@ -80,7 +80,7 @@ primeiro load sobrescreveria tudo de uma vez.
 São dois contadores separados, com propósitos diferentes: `SEED_VERSION` controla o merge
 de receitas novas no `localStorage` de quem já usa o app, `CACHE_NAME` invalida o cache do
 service worker. Cada um sobe pelos seus próprios motivos e eles **não devem ser alinhados**.
-Hoje estão em 41 e v39. Divergirem é o esperado, não é bug — não "corrigir".
+Hoje estão em 48 e v40. Divergirem é o esperado, não é bug — não "corrigir".
 
 ## Validação
 

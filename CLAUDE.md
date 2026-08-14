@@ -44,16 +44,43 @@ salvos. Sem o passo 4 o service worker continua servindo o HTML antigo do cache.
 |---|---|
 | id de receita | **100** |
 | `SEED_VERSION` | **42** |
-| `CACHE_NAME` | **v39** |
+| `CACHE_NAME` | **v40** |
 
 Atualizar esta tabela junto com cada receita inserida.
+
+## Corrigir uma receita já publicada
+
+Cada receita do `SEED_RECIPES` tem um campo `v`, começando em `1`. Ao corrigir uma receita
+que já foi publicada, **subir o `v` dela em 1**. Sem isso a correção não chega em quem já
+tem a receita salva no `localStorage` — o merge só insere o que falta, e a versão antiga
+fica lá para sempre.
+
+O que a atualização sobrescreve são os campos de autoria do seed, listados em `SEED_OWNED`:
+`name`, `emoji`, `meal`, `diet`, `time`, `servings`, `notes`, `url`, `source`, os macros,
+`ingredients`, `steps` e os campos `_en`.
+
+O que ela nunca toca:
+
+- **`fav`** — favoritar é do usuário.
+- **Histórico e notas de cozinha** — moram em `colherada-history`, keyed por id, fora do
+  objeto da receita.
+- **Receitas editadas no app.** Editar pelo modal marca a receita com `edited:true` e ela
+  passa a ser ignorada pelo merge. A versão do usuário manda, e a correção não chega nela.
+- **Receitas criadas no app** — id via `Date.now()`, nunca casam com id do seed.
+
+A checagem de `v` roda fora do gate do `SEED_VERSION`, então corrigir uma receita **não
+exige** subir o `SEED_VERSION` junto. Ele continua sendo só para receitas novas.
+
+Receita salva antes do campo `v` existir conta como `v:1` (`SEED_BASE_V`). Por isso a
+linha de base é 1 e as correções começam em 2 — se `v` ausente contasse como zero, o
+primeiro load sobrescreveria tudo de uma vez.
 
 ## SEED_VERSION e CACHE_NAME são independentes
 
 São dois contadores separados, com propósitos diferentes: `SEED_VERSION` controla o merge
 de receitas novas no `localStorage` de quem já usa o app, `CACHE_NAME` invalida o cache do
 service worker. Cada um sobe pelos seus próprios motivos e eles **não devem ser alinhados**.
-Hoje estão em 41 e v38. Divergirem é o esperado, não é bug — não "corrigir".
+Hoje estão em 41 e v39. Divergirem é o esperado, não é bug — não "corrigir".
 
 ## Validação
 

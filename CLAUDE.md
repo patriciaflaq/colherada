@@ -8,7 +8,10 @@ colherada.com.
 
 Valem para toda receita, sem exceção, tanto em receitas novas quanto em edições.
 
-- **Sem alho.** Nenhuma receita leva alho. Alho-poró é permitido.
+- **Alho em pó (garlic powder): nunca entra.** Remover totalmente se a fonte original tiver.
+- **Alho fresco (dente/clove):** quando for elemento central da receita original, incluir como
+  **opcional**, com a nota "adicione se desejar" — não é mais proibição total, é omissão por
+  padrão. Alho-poró é permitido sem restrição.
 - **Gramas, ml e °C são obrigatórios.** Xícaras, colheres e scoops podem aparecer junto,
   como complemento. O que nunca entra é oz, lb e °F — esses sempre convertidos.
 - **Adoçantes:** apenas alulose, monk fruit e stevia. Nenhum outro.
@@ -26,7 +29,8 @@ Ao receber uma receita nova, primeiro revisar e relatar, sem tocar no arquivo:
 2. **Inconsistências entre ingredientes e preparo** — item listado que nunca é usado nos
    passos, ou passo que usa algo que não está na lista.
 3. **Rendimento não declarado** — quantas porções, e se os macros são por porção ou do total.
-4. **Alho a remover** — apontar onde aparece e o que fazer no lugar.
+4. **Alho a tratar** — alho em pó: apontar onde aparece e o que fazer no lugar (remoção
+   total). Alho fresco central: apontar e propor a versão opcional ("adicione se desejar").
 
 Só depois do OK, inserir. A inserção tem quatro partes, todas obrigatórias:
 
@@ -38,13 +42,54 @@ Só depois do OK, inserir. A inserção tem quatro partes, todas obrigatórias:
 Sem o passo 3 o merge versionado não roda e a receita não aparece para quem já tem dados
 salvos. Sem o passo 4 o service worker continua servindo o HTML antigo do cache.
 
+## Link de origem (campo `url`)
+
+Toda receita nova — de site ou de Instagram — deve preencher o campo `url` já existente no
+schema com o link de origem, quando esse link existir e for acessível. Não é um campo novo:
+é o mesmo `url` que já guarda a fonte em receitas antigas.
+
+- **Receitas de site:** sempre incluir `url` com o link direto.
+- **Receitas de Instagram:** incluir quando extraído de legenda com preparo escrito. Quando
+  extraído de vídeo falado sem legenda, deixar vazio (`url:""`).
+- **Retrofit em receitas antigas:** não obrigatório de uma vez, preencher aos poucos.
+
+Racional: link de origem visível é sinal de boa-fé, reduz risco de PI (não aumenta), tanto
+para site quanto Instagram. O risco real está no texto de instrução reescrito e nas fotos —
+nunca copiar isso, nunca usar foto do autor.
+
+## Tags e regras condicionais
+
+Sistema de tags combináveis, substitui o binário saudável/não-saudável:
+`alta-proteina` · `baixo-carbo` · `sem-acucar` · `low-fat` · `tradicional`
+
+**Regras que sempre valem** (toda receita, tag ou não): métrico obrigatório, macros
+calculados e exibidos sempre (não precisa ser "saudável" pra ter macro), e as regras de
+alho da seção acima.
+
+**Regras condicionais** (só quando a receita não é marcada como `tradicional`/não-estrita):
+- Adoçante aprovado (alulose/monk fruit/stevia puros) é a regra padrão.
+- Campo `strict:false` libera uso de mel/açúcar real quando o sabor depende disso (ex.:
+  molhos com mel como ingrediente principal).
+
+## Produtos de referência aprovados
+
+**Adoçantes** (monk fruit + alulose):
+- Besti Brown (baking)
+- Wholesome Yum maple syrup
+- Wholesome Yum Zero Sugar Honey
+
+**Proteína:**
+- Cottagy (cottage cheese): 126 kcal · 14g P · 4g C · 6g F / 100g
+- Tirolez (cottage cheese): 92 kcal · 12g P · 2g C · 0g F / 100g
+- Yorgus Grego Desnatado (iogurte grego): 11,5g P / 100g
+
 ## Próximos valores livres
 
 | | Próximo |
 |---|---|
-| id de receita | **107** |
-| `SEED_VERSION` | **49** |
-| `CACHE_NAME` | **v41** |
+| id de receita | **123** |
+| `SEED_VERSION` | **50** |
+| `CACHE_NAME` | **v43** |
 
 Atualizar esta tabela junto com cada receita inserida.
 
@@ -80,7 +125,7 @@ primeiro load sobrescreveria tudo de uma vez.
 São dois contadores separados, com propósitos diferentes: `SEED_VERSION` controla o merge
 de receitas novas no `localStorage` de quem já usa o app, `CACHE_NAME` invalida o cache do
 service worker. Cada um sobe pelos seus próprios motivos e eles **não devem ser alinhados**.
-Hoje estão em 48 e v40. Divergirem é o esperado, não é bug — não "corrigir".
+Hoje estão em 49 e v42. Divergirem é o esperado, não é bug — não "corrigir".
 
 ## Validação
 

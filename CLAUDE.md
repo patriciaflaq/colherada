@@ -18,10 +18,13 @@ Valem para toda receita, sem exceção, tanto em receitas novas quanto em ediç�
   peso, e **nunca inventar/estimar peso pra preencher a lacuna**. O que nunca entra é oz, lb
   e °F — esses sempre convertidos (aqui a conversão é de unidade, não invenção de peso).
 - **Adoçantes:** apenas alulose, monk fruit e stevia. Nenhum outro.
-- **Substituição de ingrediente: nunca anotar a troca.** Quando um ingrediente da receita
-  original for substituído por outro (ex.: mostarda por miso), a receita entra como se
-  sempre tivesse sido feita com o ingrediente final — sem nota tipo "trocado por X" ou
-  "no lugar de Y". Sem pegada da substituição.
+- **Nota só serve pra quem vai cozinhar.** Dica de preparo, substituição que a pessoa pode
+  querer fazer, aviso de textura/sabor — isso entra. O que nunca entra é bastidor de
+  curadoria: explicação de como um dado foi obtido/calculado ("peso estimado porque a fonte
+  não trazia gramas"), menção a decisão de adaptação da receita original ("ingrediente
+  trocado por X", "reduzido de Y para Z", mostarda→miso e afins), ou qualquer coisa que só
+  faz sentido pra quem acompanhou o processo, não pra quem abre a receita pronta. Sem nota
+  útil pra cozinhar, o campo fica vazio — não forçar conteúdo pra preencher.
 - **Português brasileiro** nos campos de receita (`name`, `notes`, `ingredients`, `steps`).
   Os campos `_en` são a tradução para inglês.
 
@@ -103,7 +106,7 @@ alho da seção acima.
 |---|---|
 | id de receita | **129** |
 | `SEED_VERSION` | **51** |
-| `CACHE_NAME` | **v45** |
+| `CACHE_NAME` | **v46** |
 
 Atualizar esta tabela junto com cada receita inserida.
 
@@ -139,7 +142,7 @@ primeiro load sobrescreveria tudo de uma vez.
 São dois contadores separados, com propósitos diferentes: `SEED_VERSION` controla o merge
 de receitas novas no `localStorage` de quem já usa o app, `CACHE_NAME` invalida o cache do
 service worker. Cada um sobe pelos seus próprios motivos e eles **não devem ser alinhados**.
-Hoje estão em 50 e v44. Divergirem é o esperado, não é bug — não "corrigir".
+Hoje estão em 50 e v45. Divergirem é o esperado, não é bug — não "corrigir".
 
 ## Modo Cozinha Combinado
 

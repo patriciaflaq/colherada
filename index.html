@@ -470,6 +470,24 @@ main{max-width:1100px;margin:0 auto;padding:1.25rem;padding-bottom:calc(90px + v
 .cooking-done-emoji{font-size:4rem;margin-bottom:1rem;}
 .cooking-done-title{font-family:var(--display);font-size:1.8rem;font-weight:300;color:var(--text);margin-bottom:.5rem;}
 .cooking-done-sub{font-size:.9rem;color:var(--text3);margin-bottom:2rem;}
+
+.combo-master-clock{font-family:var(--display);font-size:2.6rem;font-weight:300;color:var(--text);text-align:center;margin:1rem 0 .25rem;line-height:1;}
+.combo-legend{display:flex;gap:1.1rem;justify-content:center;margin-bottom:1rem;font-size:.72rem;color:var(--text3);}
+.combo-legend-item{display:flex;align-items:center;gap:.35rem;}
+.combo-legend-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+.combo-steps-list{flex:1;overflow-y:auto;padding:0 1.1rem calc(1.5rem + var(--safe-bottom));display:flex;flex-direction:column;gap:.6rem;}
+.combo-step-row{display:flex;gap:.7rem;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-sm);padding:.75rem .85rem;transition:opacity .15s;}
+.combo-step-row.done{opacity:.45;}
+.combo-check{flex-shrink:0;width:26px;height:26px;border-radius:50%;border:1px solid var(--border2);background:var(--surface2);color:var(--text);font-size:.85rem;display:flex;align-items:center;justify-content:center;cursor:pointer;margin-top:.1rem;}
+.combo-step-row.done .combo-check{background:var(--accent);color:var(--bg);border-color:var(--accent);}
+.combo-step-body{flex:1;min-width:0;}
+.combo-step-meta{display:flex;align-items:center;gap:.4rem;font-size:.68rem;color:var(--text3);letter-spacing:.04em;text-transform:uppercase;margin-bottom:.3rem;}
+.combo-step-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.combo-step-text{font-size:.92rem;color:var(--text);line-height:1.45;}
+.combo-step-row.done .combo-step-text{text-decoration:line-through;}
+.combo-step-timer-row{display:flex;align-items:center;gap:.65rem;margin-top:.55rem;}
+.combo-step-timer-display{font-family:var(--display);font-size:1.3rem;color:var(--text);min-width:3.2rem;}
+.combo-step-timer-row .cooking-timer-btn{padding:.4rem .8rem;font-size:.75rem;}
 </style>
 </head>
 <body>
@@ -771,6 +789,23 @@ main{max-width:1100px;margin:0 auto;padding:1.25rem;padding-bottom:calc(90px + v
   </div>
 </div>
 
+<!-- COMBO PICKER MODAL -->
+<div class="modal-overlay" id="combo-picker-modal">
+  <div class="modal" style="max-width:380px"><div class="modal-handle"></div><button class="modal-close" onclick="closeModal('combo-picker-modal')">✕</button><h2 class="modal-title" style="font-size:1.1rem" data-t="combo-picker-title">Pick a recipe to combine</h2><div class="day-list" id="combo-picker-list"></div></div>
+</div>
+
+<!-- COMBO COOKING MODE OVERLAY -->
+<div class="cooking-overlay" id="combo-overlay">
+  <div class="cooking-header">
+    <button class="cooking-close" onclick="closeComboMode()">✕</button>
+    <div class="cooking-recipe-name" id="combo-title"></div>
+    <div style="width:36px"></div>
+  </div>
+  <div class="combo-master-clock" id="combo-master-clock">0:00</div>
+  <div class="combo-legend" id="combo-legend"></div>
+  <div class="combo-steps-list" id="combo-steps-list"></div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -807,6 +842,8 @@ const T = {
     'sort-protein':'Protein ↓','servings-sg':'serving','servings-pl':'servings','fat-abbr':'F',
     'per-serving':'Per serving','total-for':'Total · {n} servings','shop-merged':'Consolidated','shop-byrecipe':'By recipe','sec-produce':'Produce','sec-meat':'Meat & fish','sec-dairy':'Dairy & eggs','sec-pantry':'Pantry','sec-other':'Other','prep':'Method','kicker-nogarlic':'No garlic',
     'cooking-mode':'Cooking mode','made-it':'I made this','start':'Start','ingredients-toggle':'Ingredients','step':'Step','of':'of','prev':'Previous','next':'Next','done':'Done','servings-label':'Servings',
+    'combo-btn':'🍳 Cook with another recipe','combo-picker-title':'Pick a recipe to combine','combo-solo-step':'Prepare {name} following its own steps',
+    'export-card-btn':'🖼 Export card',
     'backup':'Backup','restore':'Restore',
     'logo-sub':'my kitchen','install-msg':'Add to Home Screen — tap Share → "Add to Home Screen" to use Colherada from any app!','backup':'Backup','restore':'Restore',
     'add-btn':'+ Add Recipe','suggest-title':'What shall we cook?','mood-title':'How are you feeling?',
@@ -866,6 +903,8 @@ const T = {
     'sort-protein':'Proteína ↓','servings-sg':'porção','servings-pl':'porções','fat-abbr':'G',
     'per-serving':'Por porção','total-for':'Total · {n} porções','shop-merged':'Consolidada','shop-byrecipe':'Por receita','sec-produce':'Hortifruti','sec-meat':'Açougue e peixaria','sec-dairy':'Laticínios e ovos','sec-pantry':'Mercearia','sec-other':'Outros','prep':'Preparo','kicker-nogarlic':'Sem alho',
     'cooking-mode':'Modo cozinha','made-it':'Fiz essa','start':'Iniciar','ingredients-toggle':'Ingredientes','step':'Passo','of':'de','prev':'Anterior','next':'Próximo','done':'Concluído','servings-label':'Porções',
+    'combo-btn':'🍳 Cozinhar com outra receita','combo-picker-title':'Escolha a receita para combinar','combo-solo-step':'Prepare {name} conforme a receita',
+    'export-card-btn':'🖼 Exportar card',
     'backup':'Backup','restore':'Restaurar',
     'logo-sub':'minha cozinha','install-msg':'Adicionar à Tela Inicial — toque em Compartilhar → "Adicionar à Tela"','backup':'Backup','restore':'Restaurar',
     'add-btn':'+ Adicionar','suggest-title':'O que vamos cozinhar?','mood-title':'Como você está?',
@@ -1257,8 +1296,8 @@ const SEED_RECIPES=[
   {id:124,v:1,name:"Cottage Cheese Grilled Cheese Pocket — Versão Fit",emoji:"🥪",meal:"Lunch",diet:"High Protein",time:30,servings:1,notes:"Versão fit adaptada de receita do Instagram (@j.newtrition) — sem link do post original disponível (veio de screenshot). Existe também uma versão não-fit mais calórica (~718 kcal), não publicada por enquanto.",url:"",source:"instagram",protein:48.4,carbs:17.3,fat:18.5,calories:438,fav:false,ingredients:["180g cottage cheese (Cottagy)","1 ovo inteiro","100ml clara de ovo líquida","2,5g amido de milho (1 colher de chá)","8g farinha de aveia (1 colher de sopa)","Ervas secas a gosto (orégano, tomilho)","Sal e pimenta a gosto","40g mussarela light ralada (Tirolez Sem Lactose)"],steps:["Preaqueça o forno a 190°C e forre uma assadeira com papel manteiga","Bata o cottage, o ovo, a clara, o amido, o sal e a pimenta no liquidificador até ficar liso","Misture a farinha de aveia e as ervas na massa batida","Espalhe fino em 2 formas retangulares na assadeira","Asse até firmar e dourar","Deixe esfriar um pouco, vire uma peça, espalhe a mussarela por dentro, cubra com a segunda peça","Doure na frigideira, tipo grilled cheese, até ficar crocante dos dois lados e o queijo derreter"],ingredients_en:["180g cottage cheese (Cottagy)", "1 whole egg", "100ml liquid egg white", "2.5g cornstarch (1 tsp)", "8g oat flour (1 tbsp)", "Dried herbs to taste (oregano, thyme)", "Salt and pepper to taste", "40g shredded light mozzarella (Tirolez Sem Lactose)"],steps_en:["Preheat the oven to 190°C (375°F) and line a baking sheet with parchment", "Blend the cottage cheese, egg, egg white, cornstarch, salt and pepper until smooth", "Stir the oat flour and herbs into the batter", "Spread thin into 2 rectangular shapes on the baking sheet", "Bake until set and golden", "Let cool slightly, flip one piece, spread the mozzarella on top, cover with the second piece", "Brown in a pan, grilled-cheese style, until crisp on both sides and the cheese melts"],notes_en:"Fit version adapted from an Instagram recipe (@j.newtrition) — no link to the original post available (came from a screenshot). A non-fit, higher-calorie version (~718 kcal) also exists but isn't published for now.",tags:["alta-proteina","baixo-carbo"]},
   {id:125,v:1,name:"Crepe Proteico de Colágeno",emoji:"🥞",meal:"Breakfast",diet:"High Protein",time:20,servings:2,notes:"Massa versátil, pode servir de base para recheios salgados. Macros corrigidos (cálculo original subestimava proteína e calorias).",url:"",source:"saved",protein:28.1,carbs:4.7,fat:7.3,calories:199,fav:false,ingredients:["150g cottage cheese (Cottagy)","1 ovo","100ml clara de ovo líquida","2,5g amido de milho (1 colher de chá)","1 scoop Elysium Cofactor (~20,5g)","Sal e ervas a gosto"],steps:["Bata todos os ingredientes no liquidificador até ficar liso","Deixe descansar 5-10 minutos — a massa engrossa e fica mais fácil de manusear","Espalhe fino numa assadeira forrada com papel manteiga","Leve ao forno até dourar levemente e firmar","Sirva como base para recheios salgados de sua preferência"],ingredients_en:["150g cottage cheese (Cottagy)", "1 egg", "100ml liquid egg white", "2.5g cornstarch (1 tsp)", "1 scoop Elysium Cofactor collagen (~20.5g)", "Salt and herbs to taste"],steps_en:["Blend all the ingredients until smooth", "Let it rest 5-10 minutes — the batter thickens and becomes easier to handle", "Spread thin on a baking sheet lined with parchment", "Bake until lightly golden and set", "Serve as a base for your favorite savory fillings"],notes_en:"Versatile batter, can serve as a base for savory fillings. Macros corrected (original calculation underestimated protein and calories).",tags:["alta-proteina","baixo-carbo"]},
   {id:126,v:1,name:"Chicken Waffle Caesar Sandwich",emoji:"🧇",meal:"Lunch",diet:"High Protein",time:20,servings:2,notes:"Adaptado de receita do Instagram (@healthy_lifestyle0023) — sem link do post original disponível (veio de screenshot). Macros não incluem o molho, que é opcional.",url:"",source:"instagram",protein:45.3,carbs:2.3,fat:13.3,calories:318,fav:false,ingredients:["210g frango cozido desfiado (1½ xícara)","1 ovo grande","40g parmesão ralado","Sal e pimenta a gosto","30g cottage cheese (2 colheres de sopa)","Alface picada a gosto","4 fatias de tomate","Molho de sua escolha (opcional — Buffalo, Jalapeño Lime, Cajun ou Chipotle)"],steps:["Numa tigela, misture o frango desfiado, o ovo, o parmesão e a pimenta","Distribua a mistura numa máquina de waffle preaquecida e cozinhe até dourar e ficar crocante","Monte o sanduíche: espalhe o cottage cheese, adicione alface, tomate e o molho escolhido entre duas \"waffles\" de frango"],ingredients_en:["210g cooked shredded chicken (1½ cups)", "1 large egg", "40g grated parmesan", "Salt and pepper to taste", "30g cottage cheese (2 tbsp)", "Chopped lettuce to taste", "4 tomato slices", "Sauce of your choice (optional — Buffalo, Jalapeño Lime, Cajun, or Chipotle)"],steps_en:["In a bowl, mix the shredded chicken, egg, parmesan, and pepper", "Spread the mixture in a preheated waffle iron and cook until golden and crisp", "Assemble the sandwich: spread the cottage cheese, add lettuce, tomato, and the sauce of your choice between two chicken \"waffles\""],notes_en:"Adapted from an Instagram recipe (@healthy_lifestyle0023) — no link to the original post available (came from a screenshot). Macros don't include the sauce, which is optional.",tags:["alta-proteina","baixo-carbo"]},
-  {id:127,v:1,name:"Risoto al Limone",emoji:"🥘",meal:"Dinner",diet:"Vegetarian",time:30,servings:3,notes:"Macros calculados com base em conversão estimada de xícaras/colheres para gramas (receita original de menu compartilhado em PDF, sem pesos declarados): 200g arroz, 28g manteiga, 22g parmesão.",url:"",source:"saved",protein:8.6,carbs:59.7,fat:15.4,calories:447,fav:false,ingredients:["200g arroz arbóreo ou carnaroli (1 xícara de chá)","½ cebola picada","1 talo pequeno de salsão picado (opcional)","1 pedaço de alho-poró picado (opcional)","120ml vinho branco seco (½ xícara de chá)","700ml a 1 litro de caldo de legumes quente","Suco e raspas de 1 limão-siciliano (só a parte amarela)","28g manteiga (2 colheres de sopa, uma gelada para finalizar)","15ml azeite (1 colher de sopa)","22g queijo parmesão ralado (3-4 colheres de sopa)","Sal e pimenta-do-reino a gosto"],steps:["Mantenha o caldo de legumes aquecido numa panela ao lado","Noutra panela, aqueça o azeite e metade da manteiga. Refogue a cebola, o salsão e o alho-poró em fogo baixo até murcharem","Adicione o arroz arbóreo e mexa por cerca de 1 minuto para selar os grãos","Despeje o vinho branco e mexa até o álcool evaporar completamente","Acrescente o caldo quente, uma concha por vez, mexendo sempre e esperando o líquido quase secar antes de adicionar mais. Repita por 15-18 minutos","Quando o arroz estiver ao dente, junte o suco de limão e a maior parte das raspas","Desligue o fogo. Adicione o parmesão e a manteiga gelada. Mexa vigorosamente para emulsionar e criar cremosidade","Deixe descansar por 2 minutos e decore com o restante das raspas"],ingredients_en:["200g arborio or carnaroli rice (1 cup)", "½ onion, chopped", "1 small celery stalk, chopped (optional)", "1 piece of leek, chopped (optional)", "120ml dry white wine (½ cup)", "700ml to 1L hot vegetable broth", "Juice and zest of 1 Sicilian lemon (yellow part only)", "28g butter (2 tbsp, one cold for finishing)", "15ml olive oil (1 tbsp)", "22g grated parmesan (3-4 tbsp)", "Salt and black pepper to taste"],steps_en:["Keep the vegetable broth hot in a pot on the side", "In another pot, heat the olive oil and half the butter. Sauté the onion, celery, and leek on low heat until softened", "Add the arborio rice and stir for about 1 minute to toast the grains", "Pour in the white wine and stir until the alcohol fully evaporates", "Add the hot broth one ladle at a time, stirring constantly and letting the liquid nearly absorb before adding more. Repeat for 15-18 minutes", "Once the rice is al dente, stir in the lemon juice and most of the zest", "Turn off the heat. Add the parmesan and cold butter. Stir vigorously to emulsify and create creaminess", "Let rest for 2 minutes and garnish with the remaining zest"],notes_en:"Macros calculated using an estimated cup/tablespoon-to-gram conversion (original recipe from a shared PDF menu with no stated weights): 200g rice, 28g butter, 22g parmesan.",tags:["tradicional"]},
-  {id:128,v:1,name:"Salmão Assado com Crosta de Amêndoas",emoji:"🐟",meal:"Dinner",diet:"Gluten-Free",time:25,servings:2,notes:"Mostarda trocada por pasta de miso (mesma quantidade) para mais sabor — impacto no macro desprezível. Pesos estimados (receita original de menu compartilhado em PDF, sem pesos declarados): 170g por filé, 46g amêndoas, 15ml azeite.",url:"",source:"saved",protein:42.5,carbs:5,fat:41,calories:552,fav:false,ingredients:["2 filés de salmão limpos, com pele (~170g cada, 340g no total)","46g amêndoas em lâminas picadas grosseiramente (½ xícara)","15ml azeite de oliva (1 colher de sopa)","6g pasta de miso (1 colher de chá)","Raspas de ½ limão-siciliano","Salsinha ou tomilho fresco picados a gosto","Sal e pimenta-do-reino a gosto"],steps:["Ligue o forno a 200°C (modo Assar). Forre uma assadeira com papel-alumínio e unte com azeite","Numa tigela, misture as amêndoas, as ervas, as raspas de limão e o azeite até virar uma farofa úmida","Seque os filés com papel-toalha e tempere com sal e pimenta. Coloque-os na assadeira com a pele para baixo","Pincele uma camada fina de pasta de miso sobre o topo de cada filé e cubra com a mistura de amêndoas, pressionando delicadamente","Leve ao forno por 12-15 minutos até o peixe lascar levemente e a crosta dourar"],ingredients_en:["2 skin-on salmon fillets, cleaned (~170g each, 340g total)", "46g roughly chopped sliced almonds (½ cup)", "15ml olive oil (1 tbsp)", "6g miso paste (1 tsp)", "Zest of ½ Sicilian lemon", "Fresh parsley or thyme, chopped, to taste", "Salt and black pepper to taste"],steps_en:["Preheat the oven to 200°C (390°F, Roast setting). Line a baking sheet with foil and grease with olive oil", "In a bowl, mix the almonds, herbs, lemon zest, and olive oil into a moist crumble", "Pat the fillets dry with paper towel and season with salt and pepper. Place them on the baking sheet skin-side down", "Brush a thin layer of miso paste over the top of each fillet and cover with the almond mixture, pressing gently", "Bake for 12-15 minutes until the fish flakes easily and the crust is golden"],notes_en:"Mustard swapped for miso paste (same amount) for extra flavor — negligible macro impact. Estimated weights (original recipe from a shared PDF menu with no stated weights): 170g per fillet, 46g almonds, 15ml olive oil.",tags:["tradicional"]},
+  {id:127,v:1,name:"Risoto al Limone",emoji:"🥘",meal:"Dinner",diet:"Vegetarian",time:30,servings:3,notes:"Macros calculados com base em conversão estimada de xícaras/colheres para gramas (receita original de menu compartilhado em PDF, sem pesos declarados): 200g arroz, 28g manteiga, 22g parmesão.",url:"",source:"saved",protein:8.6,carbs:59.7,fat:15.4,calories:447,fav:false,ingredients:["200g arroz arbóreo ou carnaroli (1 xícara de chá)","½ cebola picada","1 talo pequeno de salsão picado (opcional)","1 pedaço de alho-poró picado (opcional)","120ml vinho branco seco (½ xícara de chá)","700ml a 1 litro de caldo de legumes quente","Suco e raspas de 1 limão-siciliano (só a parte amarela)","28g manteiga (2 colheres de sopa, uma gelada para finalizar)","15ml azeite (1 colher de sopa)","22g queijo parmesão ralado (3-4 colheres de sopa)","Sal e pimenta-do-reino a gosto"],steps:["Mantenha o caldo de legumes aquecido numa panela ao lado","Noutra panela, aqueça o azeite e metade da manteiga. Refogue a cebola, o salsão e o alho-poró em fogo baixo até murcharem","Adicione o arroz arbóreo e mexa por cerca de 1 minuto para selar os grãos","Despeje o vinho branco e mexa até o álcool evaporar completamente","Acrescente o caldo quente, uma concha por vez, mexendo sempre e esperando o líquido quase secar antes de adicionar mais. Repita por 15-18 minutos","Quando o arroz estiver ao dente, junte o suco de limão e a maior parte das raspas","Desligue o fogo. Adicione o parmesão e a manteiga gelada. Mexa vigorosamente para emulsionar e criar cremosidade","Deixe descansar por 2 minutos e decore com o restante das raspas"],stepsTimed:[{durationSec:null,startOffsetSec:0},{durationSec:120,startOffsetSec:0},{durationSec:60,startOffsetSec:120},{durationSec:120,startOffsetSec:180},{durationSec:600,startOffsetSec:300},{durationSec:null,startOffsetSec:900},{durationSec:60,startOffsetSec:1200},{durationSec:120,startOffsetSec:1260}],ingredients_en:["200g arborio or carnaroli rice (1 cup)", "½ onion, chopped", "1 small celery stalk, chopped (optional)", "1 piece of leek, chopped (optional)", "120ml dry white wine (½ cup)", "700ml to 1L hot vegetable broth", "Juice and zest of 1 Sicilian lemon (yellow part only)", "28g butter (2 tbsp, one cold for finishing)", "15ml olive oil (1 tbsp)", "22g grated parmesan (3-4 tbsp)", "Salt and black pepper to taste"],steps_en:["Keep the vegetable broth hot in a pot on the side", "In another pot, heat the olive oil and half the butter. Sauté the onion, celery, and leek on low heat until softened", "Add the arborio rice and stir for about 1 minute to toast the grains", "Pour in the white wine and stir until the alcohol fully evaporates", "Add the hot broth one ladle at a time, stirring constantly and letting the liquid nearly absorb before adding more. Repeat for 15-18 minutes", "Once the rice is al dente, stir in the lemon juice and most of the zest", "Turn off the heat. Add the parmesan and cold butter. Stir vigorously to emulsify and create creaminess", "Let rest for 2 minutes and garnish with the remaining zest"],notes_en:"Macros calculated using an estimated cup/tablespoon-to-gram conversion (original recipe from a shared PDF menu with no stated weights): 200g rice, 28g butter, 22g parmesan.",tags:["tradicional"]},
+  {id:128,v:1,name:"Salmão Assado com Crosta de Amêndoas",emoji:"🐟",meal:"Dinner",diet:"Gluten-Free",time:25,servings:2,notes:"Pesos estimados (receita original de menu compartilhado em PDF, sem pesos declarados): 170g por filé, 46g amêndoas, 15ml azeite.",url:"",source:"saved",protein:42.5,carbs:5,fat:41,calories:552,fav:false,ingredients:["2 filés de salmão limpos, com pele (~170g cada, 340g no total)","46g amêndoas em lâminas picadas grosseiramente (½ xícara)","15ml azeite de oliva (1 colher de sopa)","6g pasta de miso (1 colher de chá)","Raspas de ½ limão-siciliano","Salsinha ou tomilho fresco picados a gosto","Sal e pimenta-do-reino a gosto"],steps:["Ligue o forno a 200°C (modo Assar). Forre uma assadeira com papel-alumínio e unte com azeite","Numa tigela, misture as amêndoas, as ervas, as raspas de limão e o azeite até virar uma farofa úmida","Seque os filés com papel-toalha e tempere com sal e pimenta. Coloque-os na assadeira com a pele para baixo","Pincele uma camada fina de pasta de miso sobre o topo de cada filé e cubra com a mistura de amêndoas, pressionando delicadamente","Leve ao forno por 12-15 minutos até o peixe lascar levemente e a crosta dourar"],stepsTimed:[{durationSec:null,startOffsetSec:0},{durationSec:null,startOffsetSec:0},{durationSec:null,startOffsetSec:0},{durationSec:null,startOffsetSec:0},{durationSec:720,startOffsetSec:480}],ingredients_en:["2 skin-on salmon fillets, cleaned (~170g each, 340g total)", "46g roughly chopped sliced almonds (½ cup)", "15ml olive oil (1 tbsp)", "6g miso paste (1 tsp)", "Zest of ½ Sicilian lemon", "Fresh parsley or thyme, chopped, to taste", "Salt and black pepper to taste"],steps_en:["Preheat the oven to 200°C (390°F, Roast setting). Line a baking sheet with foil and grease with olive oil", "In a bowl, mix the almonds, herbs, lemon zest, and olive oil into a moist crumble", "Pat the fillets dry with paper towel and season with salt and pepper. Place them on the baking sheet skin-side down", "Brush a thin layer of miso paste over the top of each fillet and cover with the almond mixture, pressing gently", "Bake for 12-15 minutes until the fish flakes easily and the crust is golden"],notes_en:"Estimated weights (original recipe from a shared PDF menu with no stated weights): 170g per fillet, 46g almonds, 15ml olive oil.",tags:["tradicional"]},
   {id:9,v:1,name:"Frozen Yogurt Bark — PB & J",emoji:"🫐",meal:"Snack",diet:"High Protein",time:15,servings:4,notes:"Use framboesas ou amoras. Amasse as frutas, não bata.",url:"",source:"saved",protein:14,carbs:10,fat:10,calories:178,fav:false,ingredients:["400g iogurte grego integral","30g pasta de amendoim natural","80g framboesas ou amoras frescas","15g hemp hearts ou sementes de chia"],steps:["Forre uma assadeira com papel manteiga","Amasse grosseiramente as framboesas com um garfo","Misture o iogurte com a pasta de amendoim","Espalhe em camada de ~1cm","Distribua as frutas por cima","Polvilhe os hemp hearts ou chia","Congele por mínimo 2 horas — quebre em pedaços e sirva direto do freezer"],ingredients_en:["400g full-fat Greek yogurt", "30g natural peanut butter", "80g fresh raspberries or blackberries", "15g hemp hearts or chia seeds"],steps_en:["Line a baking sheet with parchment", "Roughly mash the raspberries with a fork", "Mix the yogurt with the peanut butter", "Spread into a ~1cm layer", "Scatter the fruit over the top", "Sprinkle the hemp hearts or chia", "Freeze for at least 2 hours — break into pieces and serve straight from the freezer"],notes_en:"Use raspberries or blackberries. Mash the fruit, don't blend it."}
 ];
 
@@ -1341,6 +1380,8 @@ function goHome(){
   // fecha modo cozinha, modais abertos e volta para a lista de receitas
   const ov=document.getElementById('cooking-overlay');
   if(ov&&ov.classList.contains('show')){ stopCookingTimer(); ov.classList.remove('show'); }
+  const cov=document.getElementById('combo-overlay');
+  if(cov&&cov.classList.contains('show')){ stopComboClock(); stopComboStepTimer(); cov.classList.remove('show'); }
   document.querySelectorAll('.modal-overlay.open').forEach(m=>m.classList.remove('open'));
   document.body.style.overflow='';
   lastDetailId=null;
@@ -1539,6 +1580,8 @@ function openDetail(id){
       <button class="btn-secondary" onclick="addToShoppingList(${r.id})">${t('shop-btn')}</button>
       <button class="btn-secondary" onclick="shareRecipe(${r.id})">${t('share-btn')}</button>
       <button class="btn-secondary" onclick="openEditModal(${r.id});closeModal('detail-modal')">${t('edit-btn')}</button>
+      <button class="btn-secondary" onclick="openComboPicker(${r.id})">${t('combo-btn')}</button>
+      <button class="btn-secondary" onclick="exportRecipeCard(${r.id})">${t('export-card-btn')}</button>
     </div>`;
   lastDetailId = r.id;
   document.getElementById('detail-modal').classList.add('open');
@@ -2577,6 +2620,380 @@ function updateCookingTimerDisplay() {
   const m = Math.floor(cookingTimerRemaining / 60);
   const s = cookingTimerRemaining % 60;
   document.getElementById('cooking-timer-display').textContent = m + ':' + (s < 10 ? '0' : '') + s;
+}
+
+// ── COMBO COOKING MODE (duas receitas, timeline intercalada) ──
+let comboRecipeA = null, comboRecipeB = null;
+let comboTimeline = [];
+let comboDone = new Set();
+let comboClockInterval = null, comboClockStartedAt = null;
+let comboStepTimerIdx = null, comboStepTimerInterval = null;
+let comboStepTimerRemaining = 0, comboStepTimerTotal = 0, comboStepTimerRunning = false, comboStepTimerEndsAt = null;
+
+function openComboPicker(id) {
+  comboRecipeA = id;
+  const list = recipes.filter(r => r.id !== id);
+  document.getElementById('combo-picker-list').innerHTML = list.map(r =>
+    `<button class="day-option" onclick="pickComboRecipe(${r.id})">${r.emoji||'🍴'} ${rName(r)}</button>`
+  ).join('');
+  document.getElementById('combo-picker-modal').classList.add('open');
+}
+
+function pickComboRecipe(idB) {
+  comboRecipeB = idB;
+  closeModal('combo-picker-modal');
+  closeModal('detail-modal');
+  startComboMode();
+}
+
+// receita sem stepsTimed vira um único bloco na timeline combinada,
+// posicionado no início (paralelo ao resto) — ou no fim, se for sobremesa
+function comboEntriesFor(r, otherEndSec) {
+  const steps = rSteps(r);
+  const timed = r.stepsTimed;
+  if (timed && timed.length === steps.length) {
+    return steps.map((text, i) => ({
+      recipeId: r.id, recipeName: rName(r), recipeEmoji: r.emoji || '🍴',
+      text, durationSec: timed[i].durationSec, startOffsetSec: timed[i].startOffsetSec
+    }));
+  }
+  const atEnd = r.meal === 'Dessert';
+  return [{
+    recipeId: r.id, recipeName: rName(r), recipeEmoji: r.emoji || '🍴',
+    text: t('combo-solo-step').replace('{name}', rName(r)),
+    durationSec: null, startOffsetSec: atEnd ? otherEndSec : 0, single: true
+  }];
+}
+
+function comboTimelineEnd(entries) {
+  return entries.reduce((m, e) => Math.max(m, e.startOffsetSec + (e.durationSec || 0)), 0);
+}
+
+function buildComboTimeline(ra, rb) {
+  // primeira passada com receitas "sem timing" ancoradas em 0, para saber onde a outra receita termina
+  const provA = comboEntriesFor(ra, 0), provB = comboEntriesFor(rb, 0);
+  const endA = comboTimelineEnd(provA), endB = comboTimelineEnd(provB);
+  const entriesA = comboEntriesFor(ra, endB), entriesB = comboEntriesFor(rb, endA);
+  const all = [...entriesA, ...entriesB];
+  all.sort((x, y) => x.startOffsetSec - y.startOffsetSec ||
+    (x.recipeId === y.recipeId ? 0 : (x.recipeId === ra.id ? -1 : 1)));
+  return all;
+}
+
+function comboOffsetLabel(sec) {
+  const m = Math.floor(sec / 60);
+  return (lang === 'pt' ? 'min ' : 'min ') + m;
+}
+
+function startComboMode() {
+  const ra = recipes.find(x => x.id === comboRecipeA), rb = recipes.find(x => x.id === comboRecipeB);
+  if (!ra || !rb) return;
+  comboTimeline = buildComboTimeline(ra, rb);
+  comboDone = new Set();
+  document.getElementById('combo-title').textContent = rName(ra) + ' + ' + rName(rb);
+  document.getElementById('combo-legend').innerHTML = `
+    <div class="combo-legend-item"><span class="combo-legend-dot" style="background:var(--accent)"></span>${ra.emoji||'🍴'} ${rName(ra)}</div>
+    <div class="combo-legend-item"><span class="combo-legend-dot" style="background:var(--gold)"></span>${rb.emoji||'🍴'} ${rName(rb)}</div>`;
+  renderComboSteps();
+  comboClockStartedAt = Date.now();
+  clearInterval(comboClockInterval);
+  comboClockInterval = setInterval(updateComboMasterClock, 1000);
+  updateComboMasterClock();
+  document.getElementById('combo-overlay').classList.add('show');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeComboMode() {
+  stopComboClock();
+  stopComboStepTimer();
+  document.getElementById('combo-overlay').classList.remove('show');
+  document.body.style.overflow = '';
+  if (lastDetailId != null) openDetail(lastDetailId);
+}
+
+function stopComboClock() {
+  clearInterval(comboClockInterval);
+  comboClockInterval = null;
+}
+
+function updateComboMasterClock() {
+  const secs = Math.floor((Date.now() - comboClockStartedAt) / 1000);
+  const h = Math.floor(secs / 3600), m = Math.floor((secs % 3600) / 60), s = secs % 60;
+  const label = h > 0
+    ? h + ':' + (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s
+    : m + ':' + (s < 10 ? '0' : '') + s;
+  document.getElementById('combo-master-clock').textContent = label;
+}
+
+function renderComboSteps() {
+  const ra = recipes.find(x => x.id === comboRecipeA);
+  document.getElementById('combo-steps-list').innerHTML = comboTimeline.map((e, i) => {
+    const isA = e.recipeId === comboRecipeA;
+    const done = comboDone.has(i);
+    const timerRow = e.durationSec ? `
+      <div class="combo-step-timer-row">
+        <span class="combo-step-timer-display" id="combo-timer-${i}">${comboFmtTime(e.durationSec)}</span>
+        <button class="cooking-timer-btn" onclick="toggleComboStepTimer(${i})" id="combo-timer-btn-${i}">▶ ${t('start')}</button>
+      </div>` : '';
+    return `<div class="combo-step-row ${done?'done':''}" id="combo-row-${i}">
+      <button class="combo-check" onclick="toggleComboStep(${i})">${done?'✓':''}</button>
+      <div class="combo-step-body">
+        <div class="combo-step-meta"><span class="combo-step-dot" style="background:${isA?'var(--accent)':'var(--gold)'}"></span>${e.recipeEmoji} ${e.recipeName} · ${comboOffsetLabel(e.startOffsetSec)}</div>
+        <div class="combo-step-text">${e.text}</div>
+        ${timerRow}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function toggleComboStep(i) {
+  if (comboDone.has(i)) comboDone.delete(i); else comboDone.add(i);
+  document.getElementById('combo-row-'+i).classList.toggle('done');
+  const btn = document.querySelector('#combo-row-'+i+' .combo-check');
+  btn.textContent = comboDone.has(i) ? '✓' : '';
+}
+
+function comboFmtTime(secs) {
+  const m = Math.floor(secs / 60), s = secs % 60;
+  return m + ':' + (s < 10 ? '0' : '') + s;
+}
+
+function toggleComboStepTimer(i) {
+  const entry = comboTimeline[i];
+  if (comboStepTimerIdx !== i) {
+    stopComboStepTimer();
+    comboStepTimerIdx = i;
+    comboStepTimerTotal = entry.durationSec;
+    comboStepTimerRemaining = entry.durationSec;
+  }
+  if (!comboStepTimerRunning) {
+    comboStepTimerRunning = true;
+    comboStepTimerEndsAt = Date.now() + comboStepTimerRemaining * 1000;
+    document.getElementById('combo-timer-btn-'+i).textContent = '⏸ ' + t('pause');
+    comboStepTimerInterval = setInterval(comboStepTimerTick, 250);
+  } else {
+    comboStepTimerRemaining = Math.max(0, Math.round((comboStepTimerEndsAt - Date.now()) / 1000));
+    comboStepTimerRunning = false;
+    comboStepTimerEndsAt = null;
+    clearInterval(comboStepTimerInterval);
+    comboStepTimerInterval = null;
+    document.getElementById('combo-timer-btn-'+i).textContent = '▶ ' + t('resume');
+  }
+}
+
+function comboStepTimerTick() {
+  if (!comboStepTimerRunning || comboStepTimerEndsAt === null) return;
+  comboStepTimerRemaining = Math.max(0, Math.round((comboStepTimerEndsAt - Date.now()) / 1000));
+  const disp = document.getElementById('combo-timer-'+comboStepTimerIdx);
+  if (disp) disp.textContent = comboFmtTime(comboStepTimerRemaining);
+  if (comboStepTimerRemaining <= 0) {
+    stopComboStepTimer();
+    if (disp) disp.textContent = '✓';
+    showToast(t('timer-done')); beep();
+  }
+}
+
+function stopComboStepTimer() {
+  comboStepTimerRunning = false;
+  comboStepTimerEndsAt = null;
+  clearInterval(comboStepTimerInterval);
+  comboStepTimerInterval = null;
+  comboStepTimerIdx = null;
+}
+
+// ── EXPORT RECIPE CARD (JPG via Canvas) ──
+function cardWrapText(ctx, text, maxWidth) {
+  const words = text.split(' ');
+  const lines = [];
+  let line = '';
+  for (const w of words) {
+    const test = line ? line + ' ' + w : w;
+    if (ctx.measureText(test).width > maxWidth && line) {
+      lines.push(line);
+      line = w;
+    } else {
+      line = test;
+    }
+  }
+  if (line) lines.push(line);
+  return lines;
+}
+
+function cardRoundRect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.arcTo(x + w, y, x + w, y + h, r);
+  ctx.arcTo(x + w, y + h, x, y + h, r);
+  ctx.arcTo(x, y + h, x, y, r);
+  ctx.arcTo(x, y, x + w, y, r);
+  ctx.closePath();
+}
+
+function cardDivider(ctx, y, x1, x2, color) {
+  y += 8;
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(x1, y);
+  ctx.lineTo(x2, y);
+  ctx.stroke();
+  return y + 36;
+}
+
+function cardSlug(str) {
+  return str.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
+    .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'receita';
+}
+
+async function exportRecipeCard(id) {
+  const r = recipes.find(x => x.id === id);
+  if (!r) return;
+  const sample = 'Áéíóúçãõê 0123456789';
+  try {
+    await Promise.all([
+      document.fonts.load('300 58px Fraunces', sample),
+      document.fonts.load('500 34px Fraunces', sample),
+      document.fonts.load('400 24px "Inter Tight"', sample),
+      document.fonts.load('500 22px "Inter Tight"', sample),
+      document.fonts.load('600 22px "Inter Tight"', sample),
+    ]);
+  } catch (e) {}
+
+  const COL = { bg: '#1F1F23', surface: '#26262B', surface2: '#2E2E34', border: '#3B3B43',
+    text: '#EFECE6', text2: '#ADAAA4', text3: '#94918B', text4: '#7C7A75' };
+  const W = 1080, PAD = 64, CW = W - PAD * 2;
+  const tall = document.createElement('canvas');
+  tall.width = W; tall.height = 6000;
+  const ctx = tall.getContext('2d');
+  ctx.fillStyle = COL.bg; ctx.fillRect(0, 0, W, tall.height);
+  ctx.textBaseline = 'alphabetic';
+  ctx.textAlign = 'left';
+
+  let y = PAD;
+
+  const tag = (r.tags && r.tags[0]) ? r.tags[0].replace(/-/g, ' ') : (r.diet ? tDiet(r.diet) : '');
+  if (tag) {
+    ctx.font = '500 22px "Inter Tight"';
+    const label = tag.toUpperCase();
+    const pillW = ctx.measureText(label).width + 40, pillH = 40;
+    ctx.fillStyle = COL.surface2;
+    cardRoundRect(ctx, PAD, y, pillW, pillH, pillH / 2); ctx.fill();
+    ctx.fillStyle = COL.text2;
+    ctx.textBaseline = 'middle';
+    ctx.fillText(label, PAD + 20, y + pillH / 2 + 1);
+    ctx.textBaseline = 'alphabetic';
+    y += pillH + 32;
+  }
+
+  ctx.fillStyle = COL.text;
+  ctx.font = '300 58px Fraunces';
+  cardWrapText(ctx, rName(r), CW).forEach(line => { y += 58; ctx.fillText(line, PAD, y); });
+  y += 24;
+
+  ctx.font = '400 24px "Inter Tight"';
+  ctx.fillStyle = COL.text3;
+  const meta = [r.time ? `${r.time} min` : '', r.servings ? `${r.servings} ${r.servings > 1 ? t('servings-pl') : t('servings-sg')}` : '']
+    .filter(Boolean).join('  ·  ');
+  if (meta) { y += 24; ctx.fillText(meta, PAD, y); }
+  y += 44;
+  y = cardDivider(ctx, y, PAD, W - PAD, COL.border);
+
+  const ING = rIngredients(r);
+  if (ING.length) {
+    ctx.font = '600 22px "Inter Tight"';
+    ctx.fillStyle = COL.text3;
+    ctx.fillText(t('ingredients').toUpperCase(), PAD, y + 22);
+    y += 22 + 30;
+    ING.forEach(item => {
+      const isHeader = /^[A-ZÀ-Ú\s]+:$/.test(item.trim());
+      if (isHeader) {
+        y += 12;
+        ctx.font = '600 22px "Inter Tight"';
+        ctx.fillStyle = COL.text2;
+        ctx.fillText(item, PAD, y + 22);
+        y += 22 + 14;
+        return;
+      }
+      ctx.font = '400 26px "Inter Tight"';
+      ctx.fillStyle = COL.text;
+      const lines = cardWrapText(ctx, '•  ' + item, CW - 20);
+      lines.forEach((line, i) => { y += 34; ctx.fillText(i === 0 ? line : '    ' + line, PAD, y); });
+      y += 6;
+    });
+    y += 16;
+    y = cardDivider(ctx, y, PAD, W - PAD, COL.border);
+  }
+
+  const STP = rSteps(r);
+  if (STP.length) {
+    ctx.font = '600 22px "Inter Tight"';
+    ctx.fillStyle = COL.text3;
+    ctx.fillText(t('prep').toUpperCase(), PAD, y + 22);
+    y += 22 + 30;
+    const stepLineH = 34;
+    STP.forEach((step, i) => {
+      const numLabel = (i + 1) + '.';
+      ctx.font = '600 26px "Inter Tight"';
+      const numW = ctx.measureText(numLabel).width + 16;
+      ctx.font = '400 26px "Inter Tight"';
+      const lines = cardWrapText(ctx, step, CW - numW);
+      lines.forEach((line, li) => {
+        y += stepLineH;
+        if (li === 0) {
+          ctx.font = '600 26px "Inter Tight"';
+          ctx.fillStyle = COL.text2;
+          ctx.fillText(numLabel, PAD, y);
+        }
+        ctx.font = '400 26px "Inter Tight"';
+        ctx.fillStyle = COL.text;
+        ctx.fillText(line, PAD + numW, y);
+      });
+      y += 14;
+    });
+    y += 16;
+    y = cardDivider(ctx, y, PAD, W - PAD, COL.border);
+  }
+
+  const hasMacros = r.protein || r.carbs || r.fat || r.calories;
+  if (hasMacros) {
+    const boxH = 130;
+    ctx.fillStyle = COL.surface;
+    cardRoundRect(ctx, PAD, y, CW, boxH, 16); ctx.fill();
+    const cols = [[r.protein, 'g', t('protein')], [r.carbs, 'g', t('carbs')], [r.fat, 'g', t('fat')], [r.calories, '', 'kcal']];
+    const colW = CW / 4;
+    ctx.textAlign = 'center';
+    cols.forEach((c, i) => {
+      const cx = PAD + colW * i + colW / 2;
+      ctx.font = '500 34px Fraunces';
+      ctx.fillStyle = COL.text;
+      ctx.fillText((c[0] || 0) + (c[1] || ''), cx, y + 58);
+      ctx.font = '400 18px "Inter Tight"';
+      ctx.fillStyle = COL.text3;
+      ctx.fillText(c[2], cx, y + 90);
+    });
+    ctx.textAlign = 'left';
+    y += boxH + 40;
+  }
+
+  ctx.font = '400 20px "Inter Tight"';
+  ctx.fillStyle = COL.text4;
+  ctx.fillText('colherada · ' + (r.url || 'colherada.com'), PAD, y + 20);
+  y += 20 + PAD;
+
+  const final = document.createElement('canvas');
+  final.width = W; final.height = Math.ceil(y);
+  final.getContext('2d').drawImage(tall, 0, 0, W, final.height, 0, 0, W, final.height);
+
+  final.toBlob(blob => {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = cardSlug(rName(r)) + '.jpg';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 3000);
+  }, 'image/jpeg', 0.95);
 }
 
 applyTranslations();

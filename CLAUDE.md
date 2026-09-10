@@ -12,9 +12,16 @@ Valem para toda receita, sem exceção, tanto em receitas novas quanto em ediç�
 - **Alho fresco (dente/clove):** quando for elemento central da receita original, incluir como
   **opcional**, com a nota "adicione se desejar" — não é mais proibição total, é omissão por
   padrão. Alho-poró é permitido sem restrição.
-- **Gramas, ml e °C são obrigatórios.** Xícaras, colheres e scoops podem aparecer junto,
-  como complemento. O que nunca entra é oz, lb e °F — esses sempre convertidos.
+- **Gramas, ml e °C são obrigatórios quando a fonte original os fornece.** Xícaras, colheres
+  e scoops podem aparecer junto, como complemento. Se a fonte só trouxer cup/tbsp/tsp (sem
+  peso nenhum), pode inserir assim mesmo — não bloquear a inserção esperando confirmação de
+  peso, e **nunca inventar/estimar peso pra preencher a lacuna**. O que nunca entra é oz, lb
+  e °F — esses sempre convertidos (aqui a conversão é de unidade, não invenção de peso).
 - **Adoçantes:** apenas alulose, monk fruit e stevia. Nenhum outro.
+- **Substituição de ingrediente: nunca anotar a troca.** Quando um ingrediente da receita
+  original for substituído por outro (ex.: mostarda por miso), a receita entra como se
+  sempre tivesse sido feita com o ingrediente final — sem nota tipo "trocado por X" ou
+  "no lugar de Y". Sem pegada da substituição.
 - **Português brasileiro** nos campos de receita (`name`, `notes`, `ingredients`, `steps`).
   Os campos `_en` são a tradução para inglês.
 
@@ -96,7 +103,7 @@ alho da seção acima.
 |---|---|
 | id de receita | **129** |
 | `SEED_VERSION` | **51** |
-| `CACHE_NAME` | **v44** |
+| `CACHE_NAME` | **v45** |
 
 Atualizar esta tabela junto com cada receita inserida.
 
@@ -132,7 +139,27 @@ primeiro load sobrescreveria tudo de uma vez.
 São dois contadores separados, com propósitos diferentes: `SEED_VERSION` controla o merge
 de receitas novas no `localStorage` de quem já usa o app, `CACHE_NAME` invalida o cache do
 service worker. Cada um sobe pelos seus próprios motivos e eles **não devem ser alinhados**.
-Hoje estão em 50 e v43. Divergirem é o esperado, não é bug — não "corrigir".
+Hoje estão em 50 e v44. Divergirem é o esperado, não é bug — não "corrigir".
+
+## Modo Cozinha Combinado
+
+Campo opcional `stepsTimed` numa receita: array paralelo por índice a `steps`/`steps_en`
+(mesmo tamanho, mesma ordem), cada item `{durationSec, startOffsetSec}` — sem texto próprio,
+o texto vem de `steps`/`steps_en` pelo índice, pra não duplicar conteúdo bilíngue. `durationSec:
+null` = passo sem timer ("siga quando estiver pronto"). Retrofit gradual, só em pratos
+principais onde fizer sentido combinar — a maioria das receitas nunca vai ter isso.
+
+Botão "Cozinhar com outra receita" abre um seletor e monta uma timeline única intercalando os
+passos das duas receitas pelo `startOffsetSec`. Receita sem `stepsTimed` entra como bloco único
+sem timer (início, ou fim se `meal:"Dessert"`). Cronômetro mestre conta desde o início; timer
+por passo é independente e manual. Estado dos checkboxes é só da sessão, não persiste.
+
+## Exportar Recipe Card (JPG)
+
+Botão "Exportar card" na tela de detalhe gera um JPG via Canvas API nativa (`exportRecipeCard`
+em `index.html`), sem biblioteca externa. Layout de largura fixa (1080px) e altura dinâmica —
+desenha primeiro num canvas alto (6000px) e depois recorta pro tamanho real do conteúdo. Fontes
+Fraunces/Inter Tight, pré-carregadas via `document.fonts.load` antes de desenhar.
 
 ## Validação
 

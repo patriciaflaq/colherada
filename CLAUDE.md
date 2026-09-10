@@ -80,16 +80,23 @@ alho da seção acima.
 
 **Proteína:**
 - Cottagy (cottage cheese): 126 kcal · 14g P · 4g C · 6g F / 100g
-- Tirolez (cottage cheese): 92 kcal · 12g P · 2g C · 0g F / 100g
+- Tirolez (cottage cheese): 90 kcal · 11,6g P · 2,6g C · 3,6g F / 100g
+- Tirolez Sem Lactose (cottage cheese): 96 kcal · 11,6g P · 3,2g C · 4g F / 100g — não
+  confundir com o Tirolez tradicional acima.
 - Yorgus Grego Desnatado (iogurte grego): 11,5g P / 100g
+- HouseWhey Isolado Natural (whey isolado): 30g P · 0,6g C · 0g F por dose de 30g
+- Floowe The Whey Neutro (whey concentrado): 20g P · 4,3g C · 2,1g F por dose de 30g/2
+  scoops — não intercambiável 1:1 com isolado
+- Elysium Cofactor (colágeno, unflavored): 70 kcal · 18g P · 0g C · 0g F por scoop de
+  20,54g
 
 ## Próximos valores livres
 
 | | Próximo |
 |---|---|
-| id de receita | **123** |
-| `SEED_VERSION` | **50** |
-| `CACHE_NAME` | **v43** |
+| id de receita | **129** |
+| `SEED_VERSION` | **51** |
+| `CACHE_NAME` | **v44** |
 
 Atualizar esta tabela junto com cada receita inserida.
 
@@ -125,7 +132,7 @@ primeiro load sobrescreveria tudo de uma vez.
 São dois contadores separados, com propósitos diferentes: `SEED_VERSION` controla o merge
 de receitas novas no `localStorage` de quem já usa o app, `CACHE_NAME` invalida o cache do
 service worker. Cada um sobe pelos seus próprios motivos e eles **não devem ser alinhados**.
-Hoje estão em 49 e v42. Divergirem é o esperado, não é bug — não "corrigir".
+Hoje estão em 50 e v43. Divergirem é o esperado, não é bug — não "corrigir".
 
 ## Validação
 

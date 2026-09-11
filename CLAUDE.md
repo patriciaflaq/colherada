@@ -8,23 +8,30 @@ colherada.com.
 
 Valem para toda receita, sem exceção, tanto em receitas novas quanto em edições.
 
-- **Alho em pó (garlic powder): nunca entra.** Remover totalmente se a fonte original tiver.
-- **Alho fresco (dente/clove):** quando for elemento central da receita original, incluir como
-  **opcional**, com a nota "adicione se desejar" — não é mais proibição total, é omissão por
-  padrão. Alho-poró é permitido sem restrição.
+- **Alho nunca é removido.** Toda receita que originalmente levava alho (em pó ou fresco)
+  ganha uma linha de ingrediente opcional genérica: `"Alho e temperos a gosto (opcional)"`
+  (`"Garlic and seasonings to taste (optional)"` em EN) — item comum na lista, sem nota
+  explicativa à parte, sem badge no card, sem reconstruir a quantidade original. Alho-poró
+  é permitido sem restrição, sempre foi. Não existe mais tratamento especial pra alho além
+  dessa linha de ingrediente — ele é só mais um item opcional como qualquer outro.
 - **Gramas, ml e °C são obrigatórios quando a fonte original os fornece.** Xícaras, colheres
   e scoops podem aparecer junto, como complemento. Se a fonte só trouxer cup/tbsp/tsp (sem
   peso nenhum), pode inserir assim mesmo — não bloquear a inserção esperando confirmação de
   peso, e **nunca inventar/estimar peso pra preencher a lacuna**. O que nunca entra é oz, lb
   e °F — esses sempre convertidos (aqui a conversão é de unidade, não invenção de peso).
 - **Adoçantes:** apenas alulose, monk fruit e stevia. Nenhum outro.
-- **Nota só serve pra quem vai cozinhar.** Dica de preparo, substituição que a pessoa pode
-  querer fazer, aviso de textura/sabor — isso entra. O que nunca entra é bastidor de
-  curadoria: explicação de como um dado foi obtido/calculado ("peso estimado porque a fonte
-  não trazia gramas"), menção a decisão de adaptação da receita original ("ingrediente
-  trocado por X", "reduzido de Y para Z", mostarda→miso e afins), ou qualquer coisa que só
-  faz sentido pra quem acompanhou o processo, não pra quem abre a receita pronta. Sem nota
-  útil pra cozinhar, o campo fica vazio — não forçar conteúdo pra preencher.
+- **Nota é exclusivamente dica de preparo.** Entra: técnica e timing ("descanse a massa 10
+  min antes de assar"), substituição prática de ingrediente ("pode trocar X por Y se não
+  tiver em mãos"), ajuste de porção com propósito prático ("divida em 2 se preferir refeição
+  menor"), sugestão de acompanhamento, aviso que evita erro comum. Não entra: atribuição de
+  fonte (isso é função do `url`, não de texto em notas), explicação de como um dado foi
+  obtido/calculado (peso estimado, macro conferido, restatement de macro tipo "38g P · 1g
+  carbo por unidade"), menção a decisão de adaptação da receita original — exceto quando a
+  nota já É, em si, uma dica de substituição útil pro leitor ("substitua óleo vegetal por
+  azeite" fica; "removemos o alho porque X" sai), comparação com versão original que o
+  leitor nunca viu, trivia de food science que não muda o que o leitor faz, ou comentário
+  sobre o próprio perfil nutricional da receita ("é mais gordurosa do que proteica"). Sem
+  nota útil pra cozinhar, o campo fica vazio — não forçar conteúdo pra preencher.
 - **Português brasileiro** nos campos de receita (`name`, `notes`, `ingredients`, `steps`).
   Os campos `_en` são a tradução para inglês.
 
@@ -39,8 +46,8 @@ Ao receber uma receita nova, primeiro revisar e relatar, sem tocar no arquivo:
 2. **Inconsistências entre ingredientes e preparo** — item listado que nunca é usado nos
    passos, ou passo que usa algo que não está na lista.
 3. **Rendimento não declarado** — quantas porções, e se os macros são por porção ou do total.
-4. **Alho a tratar** — alho em pó: apontar onde aparece e o que fazer no lugar (remoção
-   total). Alho fresco central: apontar e propor a versão opcional ("adicione se desejar").
+4. **Alho a tratar** — se a fonte original leva alho (em pó ou fresco), apontar e propor a
+   linha de ingrediente opcional padrão (`"Alho e temperos a gosto (opcional)"`).
 
 Só depois do OK, inserir. A inserção tem quatro partes, todas obrigatórias:
 
@@ -106,7 +113,7 @@ alho da seção acima.
 |---|---|
 | id de receita | **129** |
 | `SEED_VERSION` | **51** |
-| `CACHE_NAME` | **v46** |
+| `CACHE_NAME` | **v47** |
 
 Atualizar esta tabela junto com cada receita inserida.
 
@@ -142,7 +149,7 @@ primeiro load sobrescreveria tudo de uma vez.
 São dois contadores separados, com propósitos diferentes: `SEED_VERSION` controla o merge
 de receitas novas no `localStorage` de quem já usa o app, `CACHE_NAME` invalida o cache do
 service worker. Cada um sobe pelos seus próprios motivos e eles **não devem ser alinhados**.
-Hoje estão em 50 e v45. Divergirem é o esperado, não é bug — não "corrigir".
+Hoje estão em 50 e v46. Divergirem é o esperado, não é bug — não "corrigir".
 
 ## Modo Cozinha Combinado
 

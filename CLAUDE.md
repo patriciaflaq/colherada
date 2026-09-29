@@ -101,7 +101,8 @@ alho da seção acima.
 - Tirolez Sem Lactose (cottage cheese): 96 kcal · 11,6g P · 3,2g C · 4g F / 100g — não
   confundir com o Tirolez tradicional acima.
 - Yorgus Grego Desnatado (iogurte grego): 11,5g P / 100g
-- HouseWhey Isolado Natural (whey isolado): 30g P · 0,6g C · 0g F por dose de 30g
+- HouseWhey Isolado Natural (whey isolado): 30g P · 0,6g C · 0g F por dose de 30g. HouseWhey no
+  projeto é **sempre isolado**, inclusive os sabores (Baunilha, Chocolate, Neutro).
 - Floowe The Whey Neutro (whey concentrado): 20g P · 4,3g C · 2,1g F por dose de 30g/2
   scoops — não intercambiável 1:1 com isolado
 - Elysium Cofactor (colágeno, unflavored): 70 kcal · 18g P · 0g C · 0g F por scoop de
@@ -111,9 +112,9 @@ alho da seção acima.
 
 | | Próximo |
 |---|---|
-| id de receita | **129** |
-| `SEED_VERSION` | **51** |
-| `CACHE_NAME` | **v48** |
+| id de receita | **159** |
+| `SEED_VERSION` | **52** |
+| `CACHE_NAME` | **v49** |
 
 Atualizar esta tabela junto com cada receita inserida.
 
@@ -149,7 +150,7 @@ primeiro load sobrescreveria tudo de uma vez.
 São dois contadores separados, com propósitos diferentes: `SEED_VERSION` controla o merge
 de receitas novas no `localStorage` de quem já usa o app, `CACHE_NAME` invalida o cache do
 service worker. Cada um sobe pelos seus próprios motivos e eles **não devem ser alinhados**.
-Hoje estão em 50 e v47. Divergirem é o esperado, não é bug — não "corrigir".
+Hoje estão em 51 e v48. Divergirem é o esperado, não é bug — não "corrigir".
 
 ## Modo Cozinha Combinado
 

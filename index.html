@@ -230,7 +230,12 @@ main{max-width:1100px;margin:0 auto;padding:1.25rem;padding-bottom:calc(90px + v
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:200;align-items:flex-end;justify-content:center;padding:0;backdrop-filter:blur(4px);}
 @media(min-width:600px){.modal-overlay{align-items:center;padding:1rem;}}
 .modal-overlay.open{display:flex;}
-.modal{background:var(--surface);border-radius:20px 20px 0 0;border:1px solid var(--border);padding:1.5rem;padding-bottom:calc(1.5rem + var(--safe-bottom));width:100%;max-width:520px;max-height:92vh;overflow-y:auto;position:relative;-webkit-overflow-scrolling:touch;}
+/* iOS: com modal/overlay aberto, trava a rolagem da página de trás — senão a lista
+   continua rolando por baixo e o Safari a desenha por cima do detalhe */
+html:has(.modal-overlay.open),html:has(.cooking-overlay.show),html:has(.timer-overlay.show),
+html:has(.modal-overlay.open) body,html:has(.cooking-overlay.show) body,html:has(.timer-overlay.show) body{overflow:hidden;}
+.modal-overlay,.cooking-overlay,.timer-overlay{overscroll-behavior:contain;}
+.modal{background:var(--surface);border-radius:20px 20px 0 0;border:1px solid var(--border);padding:1.5rem;padding-bottom:calc(1.5rem + var(--safe-bottom));width:100%;max-width:520px;max-height:92vh;overflow-y:auto;overscroll-behavior:contain;position:relative;-webkit-overflow-scrolling:touch;}
 @media(min-width:600px){.modal{border-radius:var(--r);padding-bottom:1.5rem;}}
 .modal-handle{width:32px;height:3px;background:var(--border2);border-radius:2px;margin:0 auto 1.1rem;}
 .modal-title{font-family:var(--display);font-size:1.3rem;font-weight:300;margin-bottom:1.1rem;color:var(--text);}
@@ -1650,6 +1655,7 @@ function openDetail(id){
     </div>`;
   lastDetailId = r.id;
   document.getElementById('detail-modal').classList.add('open');
+  document.querySelector('#detail-modal .modal').scrollTop=0;
 }
 
 // destaca a quantidade no início do ingrediente e escala pelo multiplicador

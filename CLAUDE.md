@@ -114,7 +114,7 @@ alho da seção acima.
 |---|---|
 | id de receita | **162** |
 | `SEED_VERSION` | **54** |
-| `CACHE_NAME` | **v52** |
+| `CACHE_NAME` | **v53** |
 
 Atualizar esta tabela junto com cada receita inserida.
 
@@ -150,7 +150,7 @@ primeiro load sobrescreveria tudo de uma vez.
 São dois contadores separados, com propósitos diferentes: `SEED_VERSION` controla o merge
 de receitas novas no `localStorage` de quem já usa o app, `CACHE_NAME` invalida o cache do
 service worker. Cada um sobe pelos seus próprios motivos e eles **não devem ser alinhados**.
-Hoje estão em 53 e v51. Divergirem é o esperado, não é bug — não "corrigir".
+Hoje estão em 53 e v52. Divergirem é o esperado, não é bug — não "corrigir".
 
 ## Modo Cozinha Combinado
 

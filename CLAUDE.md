@@ -114,7 +114,7 @@ alho da seção acima.
 |---|---|
 | id de receita | **166** |
 | `SEED_VERSION` | **56** |
-| `CACHE_NAME` | **v56** |
+| `CACHE_NAME` | **v57** |
 
 Atualizar esta tabela junto com cada receita inserida.
 
@@ -150,7 +150,7 @@ primeiro load sobrescreveria tudo de uma vez.
 São dois contadores separados, com propósitos diferentes: `SEED_VERSION` controla o merge
 de receitas novas no `localStorage` de quem já usa o app, `CACHE_NAME` invalida o cache do
 service worker. Cada um sobe pelos seus próprios motivos e eles **não devem ser alinhados**.
-Hoje estão em 55 e v55. Divergirem é o esperado, não é bug — não "corrigir".
+Hoje estão em 55 e v56. Divergirem é o esperado, não é bug — não "corrigir".
 
 ## Modo Cozinha Combinado
 
@@ -171,6 +171,15 @@ Botão "Exportar card" na tela de detalhe gera um JPG via Canvas API nativa (`ex
 em `index.html`), sem biblioteca externa. Layout de largura fixa (1080px) e altura dinâmica —
 desenha primeiro num canvas alto (6000px) e depois recorta pro tamanho real do conteúdo. Fontes
 Lora/Poppins, pré-carregadas via `document.fonts.load` antes de desenhar.
+
+## Toggle de unidades (Imperial / Métrico)
+
+Botão no header, ao lado do idioma, com estado em `localStorage` (`colherada-units`).
+É **só exibição**: o seed continua 100% métrico e a regra de conteúdo vale igual (oz, lb e °F
+nunca entram nos dados). No modo imperial, `splitAmount` e `dispText`/`dispIng` convertem na
+hora de mostrar: g/kg → oz/lb, ml/l → fl oz, °C → °F, cm/mm → in. Colher e xícara não mudam.
+Aplica a detalhe, Modo Cozinha, Modo Combinado, lista de compras, card JPG e Compartilhar;
+macros ficam sempre em gramas.
 
 ## Validação
 

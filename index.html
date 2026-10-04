@@ -525,6 +525,7 @@ html:has(.modal-overlay.open) body,html:has(.cooking-overlay.show) body,html:has
     <button class="tab-btn" onclick="showView('shopping',this)" id="tab-shopping">🛒 <span data-t="shopping">Shopping</span></button>
   </div>
   <div class="header-right">
+    <button class="lang-toggle" onclick="toggleUnits()" id="units-btn">IMPERIAL</button>
     <button class="lang-toggle" onclick="toggleLang()" id="lang-btn">PT</button>
     <button class="header-add-btn" onclick="openAddModal()" id="t-add-btn">+ Add Recipe</button>
   </div>
@@ -990,6 +991,7 @@ function applyTranslations() {
   });
   document.getElementById('search-input').placeholder = t('search-ph');
   document.getElementById('lang-btn').textContent = lang === 'en' ? 'PT' : 'EN';
+  updateUnitsBtn();
   document.getElementById('t-logo-sub').textContent = t('logo-sub');
   document.getElementById('t-add-btn').textContent = t('add-btn');
   document.getElementById('t-install-msg').textContent = t('install-msg');
@@ -1656,7 +1658,7 @@ function openDetail(id){
       </div>
     </div>`:''}
     ${NTS?`<div class="sec"><div class="sec-h"><span class="sec-k">${t('notes')}</span><span class="sec-r"></span></div>
-       <p class="dt-notes">${NTS}</p></div>`:''}
+       <p class="dt-notes">${dispText(NTS)}</p></div>`:''}
     ${iH}${sH}
     ${r.url?`<div class="sec"><div class="sec-h"><span class="sec-k">${t('source')}</span><span class="sec-r"></span></div>
        <a class="detail-link" href="${r.url}" target="_blank" rel="noopener">${t('open-recipe')} ↗</a></div>`:''}
@@ -1678,18 +1680,82 @@ function openDetail(id){
 }
 
 // destaca a quantidade no início do ingrediente e escala pelo multiplicador
-const UNITS=new Set(['g','kg','mg','ml','l','xícara','xícaras','xicara','xicaras','colher','colheres','scoop','scoops','lata','latas','pitada','pitadas','dente','dentes','fatia','fatias','ramo','ramos','talo','talos']);
+const UNITS=new Set(['g','kg','mg','ml','l','xícara','xícaras','xicara','xicaras','colher','colheres','scoop','scoops','lata','latas','pitada','pitadas','dente','dentes','fatia','fatias','ramo','ramos','talo','talos',
+  'tsp','tbsp','cup','cups','clove','cloves','slice','slices','pinch','can','cans']);
 function splitAmount(text, mult){
-  return text.replace(/^(\d+(?:[.,\/]\d+)?)(\s*)([a-zA-ZçãéêíóúÀ-ú]*)/, (m, num, sp, unit) => {
-    let val;
-    if (num.includes('/')) { const pr=num.split('/'); val=parseFloat(pr[0])/parseFloat(pr[1]); }
-    else val = parseFloat(num.replace(',', '.'));
-    if (!isFinite(val)) return m;
-    const scaled = Math.round(val*mult*100)/100;
-    const isUnit = unit && UNITS.has(unit.toLowerCase());
-    if (isUnit) return `<q>${scaled}${sp}${unit}</q>`;
-    return `<q>${scaled}</q>${sp}${unit}`;
+  // aceita intervalo no início ("300-350ml"): as duas pontas escalam e convertem juntas
+  const out = text.replace(/^(\d+(?:[.,\/]\d+)?(?:\s*[-–]\s*\d+(?:[.,]\d+)?)?)(\s*)([a-zA-ZçãéêíóúÀ-ú]*)((?:\s+de\s+(?:sopa|chá|cha|café|cafe|sobremesa)(?![a-zA-ZÀ-ú]))?)/, (m, num, sp, unit, sub) => {
+    const parse = x => { if (x.includes('/')) { const pr=x.split('/'); return parseFloat(pr[0])/parseFloat(pr[1]); } return parseFloat(x.replace(',', '.')); };
+    const vals = num.split(/\s*[-–]\s*/).map(parse);
+    if (!vals.every(isFinite)) return m;
+    const sc = vals.map(v => Math.round(v*mult*100)/100);
+    const u = (unit||'').toLowerCase();
+    if (units==='imperial' && METRIC_TO_IMP[u]) return `<q>${sc.map(METRIC_TO_IMP[u]).join('–')}</q>`;
+    const n = sc.join('-');
+    if (unit && UNITS.has(u)) return `<q>${n}${sp}${unit}${sub}</q>`;
+    return `<q>${n}</q>${sp}${unit}${sub}`;
   });
+  return dispText(out);
+}
+
+// ── UNIDADES (só exibição) ──
+// O seed é sempre métrico. No modo imperial, g/kg/ml/l e °C viram oz/lb/fl oz e °F
+// na hora de mostrar; colher e xícara não mudam entre os sistemas.
+let units = localStorage.getItem('colherada-units') || 'metric';
+const fmtU = v => { const r = v < 0.95 ? Math.round(v*100)/100 : Math.round(v*10)/10; return String(r); };
+function massImp(g){
+  const oz = Math.round(g/28.3495*10)/10;
+  if (oz >= 16) { const lb = Math.floor(oz/16), rem = Math.round((oz-lb*16)*10)/10; return rem ? `${lb} lb ${fmtU(rem)} oz` : `${lb} lb`; }
+  return `${fmtU(g/28.3495)} oz`;
+}
+const volImp = ml => `${fmtU(ml/29.5735)} fl oz`;
+const METRIC_TO_IMP = { g: v=>massImp(v), kg: v=>massImp(v*1000), ml: v=>volImp(v), l: v=>volImp(v*1000) };
+const numU = x => parseFloat(String(x).replace(',', '.'));
+const lenImp = cm => { const inch = cm/2.54; return inch >= 4 ? String(Math.round(inch)) : fmtU(inch); };
+const toCm = (a,u) => numU(a) * (u==='mm' ? 0.1 : 1);
+// ingrediente como texto puro (cards, listas): em métrico fica exatamente como está no seed
+const dispIng = i => units==='imperial' ? splitAmount(i,1).replace(/<\/?q>/g,'') : i;
+function dispText(text){
+  if (units !== 'imperial' || !text) return text;
+  return String(text)
+    .replace(/(\d+(?:[.,]\d+)?)\s*[-–]\s*(\d+(?:[.,]\d+)?)\s?(kg|g|ml|l)(?![a-zA-ZÀ-ú])/g, (m,a,b,u)=>`${METRIC_TO_IMP[u](numU(a))}–${METRIC_TO_IMP[u](numU(b))}`)
+    .replace(/(\d+(?:[.,]\d+)?)\s?(kg|g|ml|l)(?![a-zA-ZÀ-ú])/g, (m,a,u)=>METRIC_TO_IMP[u](numU(a)))
+    .replace(/(\d+(?:[.,]\d+)?)\s*[x×]\s*(\d+(?:[.,]\d+)?)\s?cm(?![a-zA-ZÀ-ú])/g, (m,a,b)=>`${lenImp(numU(a))}x${lenImp(numU(b))} in`)
+    .replace(/(\d+(?:[.,]\d+)?)\s*[-–]\s*(\d+(?:[.,]\d+)?)\s?(cm|mm)(?![a-zA-ZÀ-ú])/g, (m,a,b,u)=>`${lenImp(toCm(a,u))}-${lenImp(toCm(b,u))} in`)
+    .replace(/(\d+(?:[.,]\d+)?)\s?(cm|mm)(?![a-zA-ZÀ-ú])/g, (m,a,u)=>`${lenImp(toCm(a,u))} in`)
+    .replace(/(\d+)\s*[-–]\s*(\d+)\s*°\s*C\b/g, (m,a,b)=>`${Math.round(a*9/5+32)}-${Math.round(b*9/5+32)}°F`)
+    .replace(/(\d+(?:[.,]\d+)?)\s*°\s*C\b/g, (m,a)=>`${Math.round(numU(a)*9/5+32)}°F`);
+}
+function updateUnitsBtn(){
+  const b=document.getElementById('units-btn'); if(!b) return;
+  const toImp = units==='metric';
+  b.textContent = toImp ? 'IMPERIAL' : (lang==='pt' ? 'MÉTRICO' : 'METRIC');
+  const tip = toImp ? (lang==='pt' ? 'Mostrar em unidades imperiais (oz, lb, fl oz, °F)' : 'Show imperial units (oz, lb, fl oz, °F)')
+                    : (lang==='pt' ? 'Mostrar em unidades métricas (g, kg, ml, °C)' : 'Show metric units (g, kg, ml, °C)');
+  b.title = tip; b.setAttribute('aria-label', tip);
+}
+function toggleUnits(){
+  units = units==='metric' ? 'imperial' : 'metric';
+  localStorage.setItem('colherada-units', units);
+  updateUnitsBtn();
+  // redesenha o que estiver aberto, sem perder rolagem, porções nem timers
+  const dm = document.getElementById('detail-modal');
+  if (dm.classList.contains('open') && lastDetailId!=null) {
+    const box = dm.querySelector('.modal'), st = box.scrollTop;
+    const cnt = document.getElementById('servings-count'), cur = cnt ? parseInt(cnt.textContent) : null;
+    const r = recipes.find(x=>x.id===lastDetailId);
+    openDetail(lastDetailId);
+    if (cur && r && r.servings && cur!==r.servings) adjustServings(r.id, cur-r.servings);
+    box.scrollTop = st;
+  }
+  if (document.getElementById('cooking-overlay').classList.contains('show') && cookingRecipe) {
+    document.getElementById('cooking-step-text').textContent = dispText(rSteps(cookingRecipe)[cookingStepIdx]);
+    document.getElementById('cooking-ing-panel').innerHTML = rIngredients(cookingRecipe).map(i=>`<li>${dispIng(i)}</li>`).join('');
+  }
+  if (typeof renderShoppingList==='function') renderShoppingList();
+  if (document.getElementById('combo-overlay').classList.contains('show')) {
+    document.querySelectorAll('#combo-steps-list .combo-step-text').forEach((el,i)=>{ if(comboTimeline[i]) el.textContent = dispText(comboTimeline[i].text); });
+  }
 }
 
 // Vários timers por passo, intervalos ("5-7 min") e ingredientes grifados no texto.
@@ -1767,7 +1833,7 @@ function buildStepHTML(step, idx, r){
   const btns=timers.map(tm=>
     `<button class="step-timer-btn" onclick="event.stopPropagation();startTimer(${tm.secs},'${escapeAttr(stepLabel)}')">⏱ ${tm.label}</button>`
   ).join('');
-  const body=highlightIngredients(step,r);
+  const body=highlightIngredients(dispText(step),r);
   return `<li class="step-item"><span class="step-num"></span><div class="step-content">
       <div class="step-text">${body}</div>${btns?`<div class="step-timers">${btns}</div>`:''}
     </div></li>`;
@@ -1786,7 +1852,7 @@ function deleteRecipe(id){
 // ── SHARE ──
 async function shareRecipe(id){
   const r=recipes.find(x=>x.id===id);if(!r)return;
-  const text=`${r.emoji||'🍴'} ${rName(r)}\n\n${r.time?`⏱ ${r.time} min  `:''} ${r.servings?`👥 ${r.servings} servings`:''}${r.protein?`\n📊 ${r.protein}g P · ${r.carbs}g C · ${r.fat}g F · ${r.calories} kcal`:''}\n\n${t('ingredients')}:\n${rIngredients(r).map(i=>'• '+i).join('\n')}\n\n${t('steps')}:\n${rSteps(r).map((s,i)=>`${i+1}. ${s}`).join('\n')}${rNotes(r)?`\n\n💡 ${rNotes(r)}`:''}${r.url?`\n\n🔗 ${r.url}`:''}`;
+  const text=`${r.emoji||'🍴'} ${rName(r)}\n\n${r.time?`⏱ ${r.time} min  `:''} ${r.servings?`👥 ${r.servings} ${r.servings>1?t('servings-pl'):t('servings-sg')}`:''}${r.protein?`\n📊 ${r.protein}g P · ${r.carbs}g C · ${r.fat}g F · ${r.calories} kcal`:''}\n\n${t('ingredients')}:\n${rIngredients(r).map(i=>'• '+dispIng(i)).join('\n')}\n\n${t('steps')}:\n${rSteps(r).map((s,i)=>`${i+1}. ${dispText(s)}`).join('\n')}${rNotes(r)?`\n\n💡 ${dispText(rNotes(r))}`:''}${r.url?`\n\n🔗 ${r.url}`:''}`;
   if(navigator.share){
     try{await navigator.share({title:rName(r),text});}catch(e){}
   } else {
@@ -2003,14 +2069,14 @@ function shopSection(text){
   return 'sec-other';
 }
 function parseQty(text){
-  const m=text.match(/^([\d]+(?:[.,\/][\d]+)?)\s*([a-zA-ZçãéêíóúÀ-ú]*)\s*(.*)$/);
+  const m=text.match(/^([\d]+(?:[.,\/][\d]+)?)\s*([a-zA-ZçãéêíóúÀ-ú]*)((?:\s+de\s+(?:sopa|chá|cha|café|cafe|sobremesa)(?![a-zA-ZÀ-ú]))?)\s*(.*)$/);
   if(!m) return {qty:null,unit:'',name:text.trim()};
   let q=m[1];
   let val = q.includes('/') ? parseFloat(q.split('/')[0])/parseFloat(q.split('/')[1]) : parseFloat(q.replace(',','.'));
   const unitRaw=(m[2]||'').toLowerCase();
   const isUnit=UNITS.has(unitRaw);
   return isFinite(val)
-    ? {qty:val, unit:isUnit?unitRaw:'', name:(isUnit?m[3]:((m[2]||'')+' '+m[3])).trim()}
+    ? {qty:val, unit:isUnit?(unitRaw+(m[3]||'').toLowerCase()):'', name:(isUnit?m[4]:((m[2]||'')+(m[3]||'')+' '+m[4])).trim()}
     : {qty:null,unit:'',name:text.trim()};
 }
 function normName(n){
@@ -2062,7 +2128,7 @@ function renderShoppingList(){
         ${sc.items.map((item,i)=>`
           <div class="shopping-item${item.checked?' checked':''}" onclick="toggleShoppingItem(${sc.recipeId},${i})">
             <div class="shopping-checkbox">${item.checked?'✓':''}</div>
-            <div class="shopping-item-text">${item.text}</div>
+            <div class="shopping-item-text">${dispIng(item.text)}</div>
           </div>`).join('')}
       </div>`).join('');
     return;
@@ -2078,12 +2144,12 @@ function renderShoppingList(){
           const src=shoppingList.find(x=>x.recipeId===r.recipeId);
           return src&&src.items[r.idx]&&src.items[r.idx].checked;
         });
-        const qty=e.qty>0?`${Math.round(e.qty*100)/100}${e.unit?' '+e.unit:''}`:'';
+        const qty=e.qty>0?((units==='imperial'&&METRIC_TO_IMP[(e.unit||'').toLowerCase()])?METRIC_TO_IMP[e.unit.toLowerCase()](e.qty):`${Math.round(e.qty*100)/100}${e.unit?' '+e.unit:''}`):'';
         const from=e.refs.length>1?`<span class="shop-from">${e.refs.length}×</span>`:'';
         const payload=encodeURIComponent(JSON.stringify(e.refs.map(r=>[r.recipeId,r.idx])));
         return `<div class="shopping-item${allChecked?' checked':''}" onclick="toggleMerged('${payload}',${!allChecked})">
             <div class="shopping-checkbox">${allChecked?'✓':''}</div>
-            <div class="shopping-item-text">${qty?`<q>${qty}</q>`:''}${e.name}${e.noQty&&qty?' <i>+</i>':''}</div>
+            <div class="shopping-item-text">${qty?`<q>${qty}</q>`:''}${dispText(e.name)}${e.noQty&&qty?' <i>+</i>':''}</div>
             ${from}
           </div>`;
       }).join('')}
@@ -2104,7 +2170,7 @@ function clearShoppingList(){if(!confirm(t('clear-shopping')))return;shoppingLis
 
 async function shareShoppingList(){
   if(!shoppingList.length)return;
-  const text=shoppingList.map(s=>`${s.emoji} ${s.recipeName}\n${s.items.map(i=>(i.checked?'✓ ':'• ')+i.text).join('\n')}`).join('\n\n');
+  const text=shoppingList.map(s=>`${s.emoji} ${s.recipeName}\n${s.items.map(i=>(i.checked?'✓ ':'• ')+dispIng(i.text)).join('\n')}`).join('\n\n');
   if(navigator.share){try{await navigator.share({title:t('shopping-title'),text});}catch(e){}}
   else{await navigator.clipboard.writeText(text);showToast('Copied! 📋');}
 }
@@ -2577,7 +2643,7 @@ function startCookingMode(id) {
   document.getElementById('cooking-recipe-name').textContent = rName(r);
   // Fill ingredients
   const panel = document.getElementById('cooking-ing-panel');
-  panel.innerHTML = rIngredients(r).map(i => `<li>${i}</li>`).join('');
+  panel.innerHTML = rIngredients(r).map(i => `<li>${dispIng(i)}</li>`).join('');
   panel.classList.remove('open');
   document.getElementById('cooking-ing-toggle').textContent = '📋 ' + t('ingredients-toggle') + ' ▾';
   renderCookingStep();
@@ -2612,7 +2678,7 @@ function renderCookingStep() {
     t('step') + ' ' + (cookingStepIdx+1) + ' ' + t('of') + ' ' + total;
   document.getElementById('cooking-step-num').textContent =
     t('step') + ' ' + (cookingStepIdx+1);
-  document.getElementById('cooking-step-text').textContent = step;
+  document.getElementById('cooking-step-text').textContent = dispText(step);
 
   // Detect timer
   const timeMatch = step.match(/(\d+)\s*(min|minuto|minute|hora|hour|h\b)/i);
@@ -2829,7 +2895,7 @@ function renderComboSteps() {
       <button class="combo-check" onclick="toggleComboStep(${i})">${done?'✓':''}</button>
       <div class="combo-step-body">
         <div class="combo-step-meta"><span class="combo-step-dot" style="background:${isA?'var(--accent)':'var(--gold)'}"></span>${e.recipeEmoji} ${e.recipeName} · ${comboOffsetLabel(e.startOffsetSec)}</div>
-        <div class="combo-step-text">${e.text}</div>
+        <div class="combo-step-text">${dispText(e.text)}</div>
         ${timerRow}
       </div>
     </div>`;
@@ -2988,7 +3054,7 @@ async function exportRecipeCard(id) {
   y += 44;
   y = cardDivider(ctx, y, PAD, W - PAD, COL.border);
 
-  const ING = rIngredients(r);
+  const ING = rIngredients(r).map(dispIng);
   if (ING.length) {
     ctx.font = '600 22px Poppins';
     ctx.fillStyle = COL.text3;
@@ -3014,7 +3080,7 @@ async function exportRecipeCard(id) {
     y = cardDivider(ctx, y, PAD, W - PAD, COL.border);
   }
 
-  const STP = rSteps(r);
+  const STP = rSteps(r).map(dispText);
   if (STP.length) {
     ctx.font = '600 22px Poppins';
     ctx.fillStyle = COL.text3;

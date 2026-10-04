@@ -112,9 +112,9 @@ alho da seção acima.
 
 | | Próximo |
 |---|---|
-| id de receita | **163** |
-| `SEED_VERSION` | **55** |
-| `CACHE_NAME` | **v55** |
+| id de receita | **166** |
+| `SEED_VERSION` | **56** |
+| `CACHE_NAME` | **v56** |
 
 Atualizar esta tabela junto com cada receita inserida.
 
@@ -127,7 +127,7 @@ fica lá para sempre.
 
 O que a atualização sobrescreve são os campos de autoria do seed, listados em `SEED_OWNED`:
 `name`, `emoji`, `meal`, `diet`, `time`, `servings`, `notes`, `url`, `source`, os macros,
-`ingredients`, `steps` e os campos `_en`.
+`ingredients`, `steps`, os campos `_en`, `tags` e `strict`.
 
 O que ela nunca toca:
 
@@ -150,7 +150,7 @@ primeiro load sobrescreveria tudo de uma vez.
 São dois contadores separados, com propósitos diferentes: `SEED_VERSION` controla o merge
 de receitas novas no `localStorage` de quem já usa o app, `CACHE_NAME` invalida o cache do
 service worker. Cada um sobe pelos seus próprios motivos e eles **não devem ser alinhados**.
-Hoje estão em 54 e v54. Divergirem é o esperado, não é bug — não "corrigir".
+Hoje estão em 55 e v55. Divergirem é o esperado, não é bug — não "corrigir".
 
 ## Modo Cozinha Combinado
 

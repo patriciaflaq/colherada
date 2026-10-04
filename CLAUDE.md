@@ -114,7 +114,7 @@ alho da seção acima.
 |---|---|
 | id de receita | **163** |
 | `SEED_VERSION` | **55** |
-| `CACHE_NAME` | **v54** |
+| `CACHE_NAME` | **v55** |
 
 Atualizar esta tabela junto com cada receita inserida.
 
@@ -150,7 +150,7 @@ primeiro load sobrescreveria tudo de uma vez.
 São dois contadores separados, com propósitos diferentes: `SEED_VERSION` controla o merge
 de receitas novas no `localStorage` de quem já usa o app, `CACHE_NAME` invalida o cache do
 service worker. Cada um sobe pelos seus próprios motivos e eles **não devem ser alinhados**.
-Hoje estão em 54 e v53. Divergirem é o esperado, não é bug — não "corrigir".
+Hoje estão em 54 e v54. Divergirem é o esperado, não é bug — não "corrigir".
 
 ## Modo Cozinha Combinado
 
@@ -170,7 +170,7 @@ por passo é independente e manual. Estado dos checkboxes é só da sessão, nã
 Botão "Exportar card" na tela de detalhe gera um JPG via Canvas API nativa (`exportRecipeCard`
 em `index.html`), sem biblioteca externa. Layout de largura fixa (1080px) e altura dinâmica —
 desenha primeiro num canvas alto (6000px) e depois recorta pro tamanho real do conteúdo. Fontes
-Fraunces/Inter Tight, pré-carregadas via `document.fonts.load` antes de desenhar.
+Lora/Poppins, pré-carregadas via `document.fonts.load` antes de desenhar.
 
 ## Validação
 

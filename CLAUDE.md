@@ -101,12 +101,22 @@ alho da seção acima.
 - Tirolez Sem Lactose (cottage cheese): 96 kcal · 11,6g P · 3,2g C · 4g F / 100g — não
   confundir com o Tirolez tradicional acima.
 - Yorgus Grego Desnatado (iogurte grego): 11,5g P / 100g
-- HouseWhey Isolado Natural (whey isolado): 30g P · 0,6g C · 0g F por dose de 30g. HouseWhey no
-  projeto é **sempre isolado**, inclusive os sabores (Baunilha, Chocolate, Neutro).
+- HouseWhey no projeto é **sempre isolado**, inclusive os sabores. Uma dose são **2 scoops = 34g**
+  (o scoop é pequeno, ~17g); nunca escrever "1 scoop" para uma dose. No ingrediente, os gramas vêm
+  na frente e os scoops entre parênteses: `30g HouseWhey Isolado Baunilha (~2 scoops)`.
+  - Isolado Natural: 120 kcal · 30g P · 0,6g C · 0g F por 34g (≈ 353 kcal · 88,2g P · 1,8g C / 100g).
+    Valor de busca, não do pote — conferir no rótulo quando possível.
+  - Isolado Baunilha (rótulo): 123 kcal · 30g P · 0,8g C · 0g F por 34g (≈ 362 kcal · 88,2g P ·
+    2,4g C / 100g).
 - Floowe The Whey Neutro (whey concentrado): 20g P · 4,3g C · 2,1g F por dose de 30g/2
   scoops — não intercambiável 1:1 com isolado
 - Elysium Cofactor (colágeno, unflavored): 70 kcal · 18g P · 0g C · 0g F por scoop de
   20,54g
+
+**Farinha:**
+- Moon Protein Flour, **nova fórmula** (rótulo de 06/out/2026): 213 kcal · 40g P · 6,5g C · 3g F ·
+  41g fibra / 100g. O carbo do rótulo não inclui a fibra; na convenção do app (carbo total inclui
+  fibra), 100g = 47,5g C. O valor antigo (~60g P/100g) estava errado.
 
 ## Próximos valores livres
 
@@ -114,7 +124,7 @@ alho da seção acima.
 |---|---|
 | id de receita | **166** |
 | `SEED_VERSION` | **56** |
-| `CACHE_NAME` | **v57** |
+| `CACHE_NAME` | **v58** |
 
 Atualizar esta tabela junto com cada receita inserida.
 
@@ -150,7 +160,7 @@ primeiro load sobrescreveria tudo de uma vez.
 São dois contadores separados, com propósitos diferentes: `SEED_VERSION` controla o merge
 de receitas novas no `localStorage` de quem já usa o app, `CACHE_NAME` invalida o cache do
 service worker. Cada um sobe pelos seus próprios motivos e eles **não devem ser alinhados**.
-Hoje estão em 55 e v56. Divergirem é o esperado, não é bug — não "corrigir".
+Hoje estão em 55 e v57. Divergirem é o esperado, não é bug — não "corrigir".
 
 ## Modo Cozinha Combinado
 

@@ -14,6 +14,7 @@ Valem para toda receita, sem exceção, tanto em receitas novas quanto em ediç�
   explicativa à parte, sem badge no card, sem reconstruir a quantidade original. Alho-poró
   é permitido sem restrição, sempre foi. Não existe mais tratamento especial pra alho além
   dessa linha de ingrediente — ele é só mais um item opcional como qualquer outro.
+  Exceção aprovada por Patricia: **180 (Pão de Aveia com Beterraba)** fica sem a linha de alho.
 - **Gramas, ml e °C são obrigatórios quando a fonte original os fornece.** Xícaras, colheres
   e scoops podem aparecer junto, como complemento. Se a fonte só trouxer cup/tbsp/tsp (sem
   peso nenhum), pode inserir assim mesmo — não bloquear a inserção esperando confirmação de
@@ -127,9 +128,9 @@ alho da seção acima.
 
 | | Próximo |
 |---|---|
-| id de receita | **178** |
-| `SEED_VERSION` | **57** |
-| `CACHE_NAME` | **v60** |
+| id de receita | **182** |
+| `SEED_VERSION` | **58** |
+| `CACHE_NAME` | **v61** |
 
 Atualizar esta tabela junto com cada receita inserida.
 
@@ -171,7 +172,7 @@ a cópia dele fica). Id retirado nunca é reaproveitado — 168 é o primeiro.
 São dois contadores separados, com propósitos diferentes: `SEED_VERSION` controla o merge
 de receitas novas no `localStorage` de quem já usa o app, `CACHE_NAME` invalida o cache do
 service worker. Cada um sobe pelos seus próprios motivos e eles **não devem ser alinhados**.
-Hoje estão em 56 e v59. Divergirem é o esperado, não é bug — não "corrigir".
+Hoje estão em 57 e v60. Divergirem é o esperado, não é bug — não "corrigir".
 
 ## Modo Cozinha Combinado
 

@@ -129,7 +129,7 @@ alho da seção acima.
 |---|---|
 | id de receita | **178** |
 | `SEED_VERSION` | **57** |
-| `CACHE_NAME` | **v59** |
+| `CACHE_NAME` | **v60** |
 
 Atualizar esta tabela junto com cada receita inserida.
 
@@ -160,12 +160,18 @@ Receita salva antes do campo `v` existir conta como `v:1` (`SEED_BASE_V`). Por i
 linha de base é 1 e as correções começam em 2 — se `v` ausente contasse como zero, o
 primeiro load sobrescreveria tudo de uma vez.
 
+## Retirar uma receita publicada
+
+Apagar a linha do `SEED_RECIPES` e a entrada em `NAMES`, e pôr o id em `RETIRED_SEEDS`. No
+próximo load ela some também de quem já tinha, **menos** se o usuário editou ou favoritou (aí
+a cópia dele fica). Id retirado nunca é reaproveitado — 168 é o primeiro.
+
 ## SEED_VERSION e CACHE_NAME são independentes
 
 São dois contadores separados, com propósitos diferentes: `SEED_VERSION` controla o merge
 de receitas novas no `localStorage` de quem já usa o app, `CACHE_NAME` invalida o cache do
 service worker. Cada um sobe pelos seus próprios motivos e eles **não devem ser alinhados**.
-Hoje estão em 56 e v58. Divergirem é o esperado, não é bug — não "corrigir".
+Hoje estão em 56 e v59. Divergirem é o esperado, não é bug — não "corrigir".
 
 ## Modo Cozinha Combinado
 

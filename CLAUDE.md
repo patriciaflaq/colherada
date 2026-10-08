@@ -17,8 +17,13 @@ Valem para toda receita, sem exceção, tanto em receitas novas quanto em ediç�
 - **Gramas, ml e °C são obrigatórios quando a fonte original os fornece.** Xícaras, colheres
   e scoops podem aparecer junto, como complemento. Se a fonte só trouxer cup/tbsp/tsp (sem
   peso nenhum), pode inserir assim mesmo — não bloquear a inserção esperando confirmação de
-  peso, e **nunca inventar/estimar peso pra preencher a lacuna**. O que nunca entra é oz, lb
-  e °F — esses sempre convertidos (aqui a conversão é de unidade, não invenção de peso).
+  peso, e **nunca inventar/estimar peso pra preencher a lacuna**. Medida em xícara/colher/copo
+  **fica como a fonte escreveu**, sem gramas nem ml convertidos ao lado; a conversão para gramas
+  só existe dentro do cálculo dos macros. O que nunca entra é oz, lb e °F — esses sempre
+  convertidos (aqui a conversão é de unidade, não invenção de peso).
+- **Receita sem rendimento confiável** (massa que rende "umas tantas unidades", ex.: esfiha):
+  macros pela receita inteira ÷ peso total depois de assar (~20% de perda), aplicados a uma
+  porção-padrão em gramas declarada na nota ("Porção = 1 esfiha média (~60g)").
 - **Adoçantes:** apenas alulose, monk fruit e stevia. Nenhum outro.
 - **Nota é exclusivamente dica de preparo.** Entra: técnica e timing ("descanse a massa 10
   min antes de assar"), substituição prática de ingrediente ("pode trocar X por Y se não
@@ -122,9 +127,9 @@ alho da seção acima.
 
 | | Próximo |
 |---|---|
-| id de receita | **166** |
-| `SEED_VERSION` | **56** |
-| `CACHE_NAME` | **v58** |
+| id de receita | **178** |
+| `SEED_VERSION` | **57** |
+| `CACHE_NAME` | **v59** |
 
 Atualizar esta tabela junto com cada receita inserida.
 
@@ -160,7 +165,7 @@ primeiro load sobrescreveria tudo de uma vez.
 São dois contadores separados, com propósitos diferentes: `SEED_VERSION` controla o merge
 de receitas novas no `localStorage` de quem já usa o app, `CACHE_NAME` invalida o cache do
 service worker. Cada um sobe pelos seus próprios motivos e eles **não devem ser alinhados**.
-Hoje estão em 55 e v57. Divergirem é o esperado, não é bug — não "corrigir".
+Hoje estão em 56 e v58. Divergirem é o esperado, não é bug — não "corrigir".
 
 ## Modo Cozinha Combinado
 

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'colherada-v60';
+const CACHE_NAME = 'colherada-v62';
 const ASSETS = [
   './index.html?share_target',  // share target
   './index.html',

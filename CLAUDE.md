@@ -26,6 +26,9 @@ Valem para toda receita, sem exceção, tanto em receitas novas quanto em ediç�
   macros pela receita inteira ÷ peso total depois de assar (~20% de perda), aplicados a uma
   porção-padrão em gramas declarada na nota ("Porção = 1 esfiha média (~60g)").
 - **Adoçantes:** apenas alulose, monk fruit e stevia. Nenhum outro.
+- **Terminologia: "maple syrup", nunca "xarope de bordo".** Nos campos em português
+  (`name`, `notes`, `ingredients`, `steps`) e no texto de UI, o termo é "maple syrup", igual ao
+  inglês ("Maple syrup" no começo de frase). Vale também para "xarope de ácer/acer".
 - **Nota é exclusivamente dica de preparo.** Entra: técnica e timing ("descanse a massa 10
   min antes de assar"), substituição prática de ingrediente ("pode trocar X por Y se não
   tiver em mãos"), ajuste de porção com propósito prático ("divida em 2 se preferir refeição
@@ -130,7 +133,7 @@ alho da seção acima.
 |---|---|
 | id de receita | **182** |
 | `SEED_VERSION` | **58** |
-| `CACHE_NAME` | **v61** |
+| `CACHE_NAME` | **v63** |
 
 Atualizar esta tabela junto com cada receita inserida.
 
@@ -172,7 +175,7 @@ a cópia dele fica). Id retirado nunca é reaproveitado — 168 é o primeiro.
 São dois contadores separados, com propósitos diferentes: `SEED_VERSION` controla o merge
 de receitas novas no `localStorage` de quem já usa o app, `CACHE_NAME` invalida o cache do
 service worker. Cada um sobe pelos seus próprios motivos e eles **não devem ser alinhados**.
-Hoje estão em 57 e v60. Divergirem é o esperado, não é bug — não "corrigir".
+Hoje estão em 57 e v62. Divergirem é o esperado, não é bug — não "corrigir".
 
 ## Modo Cozinha Combinado
 

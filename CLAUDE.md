@@ -141,7 +141,7 @@ alho da seção acima.
 |---|---|
 | id de receita | **207** |
 | `SEED_VERSION` | **60** |
-| `CACHE_NAME` | **v68** |
+| `CACHE_NAME` | **v69** |
 
 Atualizar esta tabela junto com cada receita inserida.
 
@@ -176,14 +176,15 @@ primeiro load sobrescreveria tudo de uma vez.
 
 Apagar a linha do `SEED_RECIPES` e a entrada em `NAMES`, e pôr o id em `RETIRED_SEEDS`. No
 próximo load ela some também de quem já tinha, **menos** se o usuário editou ou favoritou (aí
-a cópia dele fica). Id retirado nunca é reaproveitado — 168 é o primeiro.
+a cópia dele fica). Id retirado nunca é reaproveitado. Retiradas até agora: 168 (duplicada) e
+108 (incompleta; o conteúdo ficou em `rascunhos/108-cheesecake-cup-mirtilo.md` para retomar).
 
 ## SEED_VERSION e CACHE_NAME são independentes
 
 São dois contadores separados, com propósitos diferentes: `SEED_VERSION` controla o merge
 de receitas novas no `localStorage` de quem já usa o app, `CACHE_NAME` invalida o cache do
 service worker. Cada um sobe pelos seus próprios motivos e eles **não devem ser alinhados**.
-Hoje estão em 59 e v67. Divergirem é o esperado, não é bug — não "corrigir".
+Hoje estão em 59 e v68. Divergirem é o esperado, não é bug — não "corrigir".
 
 ## Modo Cozinha Combinado
 

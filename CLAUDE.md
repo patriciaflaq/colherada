@@ -108,6 +108,13 @@ alho da seção acima.
 
 ## Produtos de referência aprovados
 
+**Marcas não aparecem no texto das receitas** (decisão de Patricia, 21/out/2026): usar o termo
+genérico ("iogurte grego desnatado", "cottage light", "whey protein isolado de baunilha", "leite
+desnatado com mais proteína", "colágeno sem sabor"...), porque nem todo mundo acha a marca. Ficam
+com nome: **Philadelphia, Callebaut, PB2 e Boursin**; máquina de sorvete como "tipo Ninja Creami".
+Whey e colágeno vão só em gramas, sem scoops (o tamanho do scoop muda de marca para marca). Os
+produtos abaixo seguem como **referência para calcular os macros**.
+
 **Adoçantes** (monk fruit + alulose) — referência de macro; no texto da receita usar o genérico
 ("maple syrup sem açúcar", "mel zero açúcar", "adoçante tipo açúcar mascavo"), nunca a marca:
 - Besti Brown (baking)
@@ -122,7 +129,7 @@ alho da seção acima.
 - Yorgus Grego Desnatado (iogurte grego): 11,5g P / 100g
 - HouseWhey no projeto é **sempre isolado**, inclusive os sabores. Uma dose são **2 scoops = 34g**
   (o scoop é pequeno, ~17g); nunca escrever "1 scoop" para uma dose. No ingrediente, os gramas vêm
-  na frente e os scoops entre parênteses: `30g HouseWhey Isolado Baunilha (~2 scoops)`.
+  na frente; no texto da receita fica só `30g whey protein isolado de baunilha` (sem marca nem scoops).
   - Isolado Natural: 120 kcal · 30g P · 0,6g C · 0g F por 34g (≈ 353 kcal · 88,2g P · 1,8g C / 100g).
     Valor de busca, não do pote — conferir no rótulo quando possível.
   - Isolado Baunilha (rótulo): 123 kcal · 30g P · 0,8g C · 0g F por 34g (≈ 362 kcal · 88,2g P ·
@@ -143,7 +150,7 @@ alho da seção acima.
 |---|---|
 | id de receita | **220** |
 | `SEED_VERSION` | **61** |
-| `CACHE_NAME` | **v71** |
+| `CACHE_NAME` | **v72** |
 
 Atualizar esta tabela junto com cada receita inserida.
 
@@ -186,7 +193,7 @@ a cópia dele fica). Id retirado nunca é reaproveitado. Retiradas até agora: 1
 São dois contadores separados, com propósitos diferentes: `SEED_VERSION` controla o merge
 de receitas novas no `localStorage` de quem já usa o app, `CACHE_NAME` invalida o cache do
 service worker. Cada um sobe pelos seus próprios motivos e eles **não devem ser alinhados**.
-Hoje estão em 60 e v70. Divergirem é o esperado, não é bug — não "corrigir".
+Hoje estão em 60 e v71. Divergirem é o esperado, não é bug — não "corrigir".
 
 ## Modo Cozinha Combinado
 

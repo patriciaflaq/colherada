@@ -88,7 +88,13 @@ nunca copiar isso, nunca usar foto do autor.
 ## Tags e regras condicionais
 
 Sistema de tags combináveis, substitui o binário saudável/não-saudável:
-`alta-proteina` · `baixo-carbo` · `sem-acucar` · `low-fat` · `tradicional`
+`alta-proteina` · `baixo-carbo` · `sem-acucar` · `low-fat` · `tradicional` · `dips`
+
+**Filtro por tags na tela:** chips depois de refeição/dieta, com contagem automática, marcáveis
+juntos e combinados com **E** (a receita precisa ter todas as tags marcadas). Rótulos PT/EN em
+`TAG_LABELS`, ordem em `TAG_ORDER` — tag nova precisa entrar nos dois. `alta-proteina` fica fora
+dos chips porque o chip automático "Alto proteico" já cobre. A busca também procura nas tags.
+Refeição (`meal`, ex.: Lanche) continua sendo campo próprio, não tag.
 
 **Regras que sempre valem** (toda receita, tag ou não): métrico obrigatório, macros
 calculados e exibidos sempre (não precisa ser "saudável" pra ter macro), e as regras de
@@ -135,7 +141,7 @@ alho da seção acima.
 |---|---|
 | id de receita | **207** |
 | `SEED_VERSION` | **60** |
-| `CACHE_NAME` | **v67** |
+| `CACHE_NAME` | **v68** |
 
 Atualizar esta tabela junto com cada receita inserida.
 
@@ -177,7 +183,7 @@ a cópia dele fica). Id retirado nunca é reaproveitado — 168 é o primeiro.
 São dois contadores separados, com propósitos diferentes: `SEED_VERSION` controla o merge
 de receitas novas no `localStorage` de quem já usa o app, `CACHE_NAME` invalida o cache do
 service worker. Cada um sobe pelos seus próprios motivos e eles **não devem ser alinhados**.
-Hoje estão em 59 e v66. Divergirem é o esperado, não é bug — não "corrigir".
+Hoje estão em 59 e v67. Divergirem é o esperado, não é bug — não "corrigir".
 
 ## Modo Cozinha Combinado
 

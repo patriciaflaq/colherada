@@ -293,6 +293,7 @@ html:has(.modal-overlay.open) body,html:has(.cooking-overlay.show) body,html:has
 .dt-notes{font-size:14.5px;color:var(--text3);line-height:1.6;}
 
 .mpanel{margin-top:1.35rem;background:var(--surface);box-shadow:0 1px 3px rgba(32,31,28,.06);border:1px solid var(--border);border-radius:var(--r);padding:.95rem 1rem;}
+.mpanel-note{font-size:11px;line-height:1.45;color:var(--text3);margin-top:.75rem;padding-top:.65rem;border-top:1px solid var(--border);}
 .mpanel-k{font-family:var(--mono);font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--text4);margin-bottom:.8rem;}
 .mgrid{display:flex;}
 .mcell{flex:1;border-left:1px solid var(--border);padding-left:.75rem;}
@@ -858,7 +859,7 @@ const T = {
     'browse':'Recipes','suggest':'Suggest','planner':'Week','macros':'Macros','shopping':'Shopping',
     'f-all':'All','f-fav':'Favourites','f-protein':'High protein','f-quick':'Under 20 min','f-cooked':'Cooked',
     'sort-protein':'Protein ↓','servings-sg':'serving','servings-pl':'servings','fat-abbr':'F',
-    'per-serving':'Per serving','total-for':'Total · {n} servings','shop-merged':'Consolidated','shop-byrecipe':'By recipe','sec-produce':'Produce','sec-meat':'Meat & fish','sec-dairy':'Dairy & eggs','sec-pantry':'Pantry','sec-other':'Other','prep':'Method',
+    'per-serving':'Per serving','macro-note':'Approximate values: macros vary with the brands and nutrition labels of the products you use.','macro-note-short':'Approximate macros: they vary with the brands used.','total-for':'Total · {n} servings','shop-merged':'Consolidated','shop-byrecipe':'By recipe','sec-produce':'Produce','sec-meat':'Meat & fish','sec-dairy':'Dairy & eggs','sec-pantry':'Pantry','sec-other':'Other','prep':'Method',
     'cooking-mode':'Cooking mode','made-it':'I made this','start':'Start','ingredients-toggle':'Ingredients','step':'Step','of':'of','prev':'Previous','next':'Next','done':'Done','servings-label':'Servings',
     'combo-btn':'🍳 Cook with another recipe','combo-picker-title':'Pick a recipe to combine','combo-solo-step':'Prepare {name} following its own steps',
     'export-card-btn':'🖼 Export card',
@@ -919,7 +920,7 @@ const T = {
     'browse':'Receitas','suggest':'Sugerir','planner':'Semana','macros':'Macros','shopping':'Compras',
     'f-all':'Todas','f-fav':'Favoritas','f-protein':'Alto proteico','f-quick':'Até 20 min','f-cooked':'Feitas',
     'sort-protein':'Proteína ↓','servings-sg':'porção','servings-pl':'porções','fat-abbr':'G',
-    'per-serving':'Por porção','total-for':'Total · {n} porções','shop-merged':'Consolidada','shop-byrecipe':'Por receita','sec-produce':'Hortifruti','sec-meat':'Açougue e peixaria','sec-dairy':'Laticínios e ovos','sec-pantry':'Mercearia','sec-other':'Outros','prep':'Preparo',
+    'per-serving':'Por porção','macro-note':'Valores aproximados: os macros variam conforme as marcas e a tabela nutricional dos produtos que você usar.','macro-note-short':'Macros aproximados: variam conforme as marcas usadas.','total-for':'Total · {n} porções','shop-merged':'Consolidada','shop-byrecipe':'Por receita','sec-produce':'Hortifruti','sec-meat':'Açougue e peixaria','sec-dairy':'Laticínios e ovos','sec-pantry':'Mercearia','sec-other':'Outros','prep':'Preparo',
     'cooking-mode':'Modo cozinha','made-it':'Fiz essa','start':'Iniciar','ingredients-toggle':'Ingredientes','step':'Passo','of':'de','prev':'Anterior','next':'Próximo','done':'Concluído','servings-label':'Porções',
     'combo-btn':'🍳 Cozinhar com outra receita','combo-picker-title':'Escolha a receita para combinar','combo-solo-step':'Prepare {name} conforme a receita',
     'export-card-btn':'🖼 Exportar card',
@@ -1774,6 +1775,7 @@ function openDetail(id){
       </div>
       ${macroSpine(r)}
       <div class="mpanel-total" id="mpanel-total">${macroTotalLine(r, r.servings)}</div>
+      <div class="mpanel-note">${t('macro-note')}</div>
     </div>`:'';
 
   const ING=rIngredients(r), STP=rSteps(r), NTS=rNotes(r);
@@ -1995,7 +1997,7 @@ function deleteRecipe(id){
 // ── SHARE ──
 async function shareRecipe(id){
   const r=recipes.find(x=>x.id===id);if(!r)return;
-  const text=`${r.emoji||'🍴'} ${rName(r)}\n\n${r.time?`⏱ ${r.time} min  `:''} ${r.servings?`👥 ${r.servings} ${r.servings>1?t('servings-pl'):t('servings-sg')}`:''}${r.protein?`\n📊 ${r.protein}g P · ${r.carbs}g C · ${r.fat}g F · ${r.calories} kcal`:''}\n\n${t('ingredients')}:\n${rIngredients(r).map(i=>'• '+dispIng(i)).join('\n')}\n\n${t('steps')}:\n${rSteps(r).map((s,i)=>`${i+1}. ${dispText(s)}`).join('\n')}${rNotes(r)?`\n\n💡 ${dispText(rNotes(r))}`:''}${r.url?`\n\n🔗 ${r.url}`:''}`;
+  const text=`${r.emoji||'🍴'} ${rName(r)}\n\n${r.time?`⏱ ${r.time} min  `:''} ${r.servings?`👥 ${r.servings} ${r.servings>1?t('servings-pl'):t('servings-sg')}`:''}${r.protein?`\n📊 ${r.protein}g P · ${r.carbs}g C · ${r.fat}g F · ${r.calories} kcal\n${t('macro-note-short')}`:''}\n\n${t('ingredients')}:\n${rIngredients(r).map(i=>'• '+dispIng(i)).join('\n')}\n\n${t('steps')}:\n${rSteps(r).map((s,i)=>`${i+1}. ${dispText(s)}`).join('\n')}${rNotes(r)?`\n\n💡 ${dispText(rNotes(r))}`:''}${r.url?`\n\n🔗 ${r.url}`:''}`;
   if(navigator.share){
     try{await navigator.share({title:rName(r),text});}catch(e){}
   } else {
@@ -3273,7 +3275,10 @@ async function exportRecipeCard(id) {
       ctx.fillText(c[2], cx, y + 90);
     });
     ctx.textAlign = 'left';
-    y += boxH + 40;
+    ctx.font = '400 18px Poppins';
+    ctx.fillStyle = COL.text3;
+    ctx.fillText(t('macro-note-short'), PAD, y + boxH + 32);
+    y += boxH + 72;
   }
 
   ctx.font = '400 20px Poppins';

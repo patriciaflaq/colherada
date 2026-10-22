@@ -113,7 +113,8 @@ genérico ("iogurte grego desnatado", "cottage light", "whey protein isolado de 
 desnatado com mais proteína", "colágeno sem sabor"...), porque nem todo mundo acha a marca. Ficam
 com nome: **Philadelphia, Callebaut, PB2 e Boursin**; máquina de sorvete como "tipo Ninja Creami".
 Whey e colágeno vão só em gramas, sem scoops (o tamanho do scoop muda de marca para marca). Os
-produtos abaixo seguem como **referência para calcular os macros**.
+produtos abaixo seguem como **referência para calcular os macros**. Por isso o app avisa que os macros são
+aproximados (`macro-note` no detalhe; `macro-note-short` no card JPG e no Compartilhar).
 
 **Adoçantes** (monk fruit + alulose) — referência de macro; no texto da receita usar o genérico
 ("maple syrup sem açúcar", "mel zero açúcar", "adoçante tipo açúcar mascavo"), nunca a marca:
@@ -150,7 +151,7 @@ produtos abaixo seguem como **referência para calcular os macros**.
 |---|---|
 | id de receita | **220** |
 | `SEED_VERSION` | **61** |
-| `CACHE_NAME` | **v72** |
+| `CACHE_NAME` | **v73** |
 
 Atualizar esta tabela junto com cada receita inserida.
 
@@ -193,7 +194,7 @@ a cópia dele fica). Id retirado nunca é reaproveitado. Retiradas até agora: 1
 São dois contadores separados, com propósitos diferentes: `SEED_VERSION` controla o merge
 de receitas novas no `localStorage` de quem já usa o app, `CACHE_NAME` invalida o cache do
 service worker. Cada um sobe pelos seus próprios motivos e eles **não devem ser alinhados**.
-Hoje estão em 60 e v71. Divergirem é o esperado, não é bug — não "corrigir".
+Hoje estão em 60 e v72. Divergirem é o esperado, não é bug — não "corrigir".
 
 ## Modo Cozinha Combinado
 

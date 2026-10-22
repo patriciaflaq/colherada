@@ -108,7 +108,8 @@ alho da seção acima.
 
 ## Produtos de referência aprovados
 
-**Adoçantes** (monk fruit + alulose):
+**Adoçantes** (monk fruit + alulose) — referência de macro; no texto da receita usar o genérico
+("maple syrup sem açúcar", "mel zero açúcar", "adoçante tipo açúcar mascavo"), nunca a marca:
 - Besti Brown (baking)
 - Wholesome Yum maple syrup
 - Wholesome Yum Zero Sugar Honey
@@ -142,7 +143,7 @@ alho da seção acima.
 |---|---|
 | id de receita | **220** |
 | `SEED_VERSION` | **61** |
-| `CACHE_NAME` | **v70** |
+| `CACHE_NAME` | **v71** |
 
 Atualizar esta tabela junto com cada receita inserida.
 
@@ -185,7 +186,7 @@ a cópia dele fica). Id retirado nunca é reaproveitado. Retiradas até agora: 1
 São dois contadores separados, com propósitos diferentes: `SEED_VERSION` controla o merge
 de receitas novas no `localStorage` de quem já usa o app, `CACHE_NAME` invalida o cache do
 service worker. Cada um sobe pelos seus próprios motivos e eles **não devem ser alinhados**.
-Hoje estão em 60 e v69. Divergirem é o esperado, não é bug — não "corrigir".
+Hoje estão em 60 e v70. Divergirem é o esperado, não é bug — não "corrigir".
 
 ## Modo Cozinha Combinado
 

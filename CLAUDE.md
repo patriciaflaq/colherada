@@ -26,7 +26,8 @@ Valem para toda receita, sem exceção, tanto em receitas novas quanto em ediç�
   macros pela receita inteira ÷ peso total depois de assar (~20% de perda), aplicados a uma
   porção-padrão em gramas declarada na nota ("Porção = 1 esfiha média (~60g)").
 - **Adoçantes:** apenas alulose, monk fruit e stevia. Nenhum outro.
-  Exceção aprovada por Patricia: **196 (Camembert Assado com Figos e Prosciutto)** leva mel (`strict:false`).
+  Exceções aprovadas por Patricia: **196 (Camembert Assado com Figos e Prosciutto)** leva mel e **209 (Frango
+  General Tso)** leva mel e molho hoisin — as duas com `strict:false`.
 - **Terminologia: "maple syrup", nunca "xarope de bordo".** Nos campos em português
   (`name`, `notes`, `ingredients`, `steps`) e no texto de UI, o termo é "maple syrup", igual ao
   inglês ("Maple syrup" no começo de frase). Vale também para "xarope de ácer/acer" e para
@@ -139,9 +140,9 @@ alho da seção acima.
 
 | | Próximo |
 |---|---|
-| id de receita | **207** |
-| `SEED_VERSION` | **60** |
-| `CACHE_NAME` | **v69** |
+| id de receita | **220** |
+| `SEED_VERSION` | **61** |
+| `CACHE_NAME` | **v70** |
 
 Atualizar esta tabela junto com cada receita inserida.
 
@@ -184,7 +185,7 @@ a cópia dele fica). Id retirado nunca é reaproveitado. Retiradas até agora: 1
 São dois contadores separados, com propósitos diferentes: `SEED_VERSION` controla o merge
 de receitas novas no `localStorage` de quem já usa o app, `CACHE_NAME` invalida o cache do
 service worker. Cada um sobe pelos seus próprios motivos e eles **não devem ser alinhados**.
-Hoje estão em 59 e v68. Divergirem é o esperado, não é bug — não "corrigir".
+Hoje estão em 60 e v69. Divergirem é o esperado, não é bug — não "corrigir".
 
 ## Modo Cozinha Combinado
 

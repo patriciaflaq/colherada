@@ -14,7 +14,8 @@ Valem para toda receita, sem exceção, tanto em receitas novas quanto em ediç�
   explicativa à parte, sem badge no card, sem reconstruir a quantidade original. Alho-poró
   é permitido sem restrição, sempre foi. Não existe mais tratamento especial pra alho além
   dessa linha de ingrediente — ele é só mais um item opcional como qualquer outro.
-  Exceção aprovada por Patricia: **180 (Pão de Aveia com Beterraba)** fica sem a linha de alho.
+  Exceções aprovadas por Patricia: **180 (Pão de Aveia com Beterraba)**, **225 (Burritos Cremosos de
+  Frango e Arroz)** e **231 (Naan de Cottage)** ficam sem a linha de alho.
 - **Gramas, ml e °C são obrigatórios quando a fonte original os fornece.** Xícaras, colheres
   e scoops podem aparecer junto, como complemento. Se a fonte só trouxer cup/tbsp/tsp (sem
   peso nenhum), pode inserir assim mesmo — não bloquear a inserção esperando confirmação de
@@ -148,9 +149,9 @@ aproximados (`macro-note` no detalhe; `macro-note-short` no card JPG e no Compar
 
 | | Próximo |
 |---|---|
-| id de receita | **220** |
-| `SEED_VERSION` | **61** |
-| `CACHE_NAME` | **v75** |
+| id de receita | **246** |
+| `SEED_VERSION` | **62** |
+| `CACHE_NAME` | **v76** |
 
 Atualizar esta tabela junto com cada receita inserida.
 
@@ -185,15 +186,16 @@ primeiro load sobrescreveria tudo de uma vez.
 
 Apagar a linha do `SEED_RECIPES` e a entrada em `NAMES`, e pôr o id em `RETIRED_SEEDS`. No
 próximo load ela some também de quem já tinha, **menos** se o usuário editou ou favoritou (aí
-a cópia dele fica). Id retirado nunca é reaproveitado. Retiradas até agora: 168 (duplicada) e
-108 (incompleta; o conteúdo ficou em `rascunhos/108-cheesecake-cup-mirtilo.md` para retomar).
+a cópia dele fica). Id retirado nunca é reaproveitado. Retirada até agora: 168 (duplicada). A 108 chegou a ser
+retirada (incompleta) e voltou completa no mesmo id, com `v:2`, por decisão de Patricia: para
+devolver uma receita, tirar o id do `RETIRED_SEEDS` e subir o `v`.
 
 ## SEED_VERSION e CACHE_NAME são independentes
 
 São dois contadores separados, com propósitos diferentes: `SEED_VERSION` controla o merge
 de receitas novas no `localStorage` de quem já usa o app, `CACHE_NAME` invalida o cache do
 service worker. Cada um sobe pelos seus próprios motivos e eles **não devem ser alinhados**.
-Hoje estão em 60 e v74. Divergirem é o esperado, não é bug — não "corrigir".
+Hoje estão em 61 e v75. Divergirem é o esperado, não é bug — não "corrigir".
 
 ## Modo Cozinha Combinado
 

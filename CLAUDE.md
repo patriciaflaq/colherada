@@ -150,7 +150,7 @@ aproximados (`macro-note` no detalhe; `macro-note-short` no card JPG e no Compar
 |---|---|
 | id de receita | **220** |
 | `SEED_VERSION` | **61** |
-| `CACHE_NAME` | **v74** |
+| `CACHE_NAME` | **v75** |
 
 Atualizar esta tabela junto com cada receita inserida.
 
@@ -193,7 +193,7 @@ a cópia dele fica). Id retirado nunca é reaproveitado. Retiradas até agora: 1
 São dois contadores separados, com propósitos diferentes: `SEED_VERSION` controla o merge
 de receitas novas no `localStorage` de quem já usa o app, `CACHE_NAME` invalida o cache do
 service worker. Cada um sobe pelos seus próprios motivos e eles **não devem ser alinhados**.
-Hoje estão em 60 e v73. Divergirem é o esperado, não é bug — não "corrigir".
+Hoje estão em 60 e v74. Divergirem é o esperado, não é bug — não "corrigir".
 
 ## Modo Cozinha Combinado
 
@@ -223,6 +223,14 @@ nunca entram nos dados). No modo imperial, `splitAmount` e `dispText`/`dispIng` 
 hora de mostrar: g/kg → oz/lb, ml/l → fl oz, °C → °F, cm/mm → in. Colher e xícara não mudam.
 Aplica a detalhe, Modo Cozinha, Modo Combinado, lista de compras, card JPG e Compartilhar;
 macros ficam sempre em gramas.
+
+## Ordenação da lista
+
+Botão no cabeçalho da lista (`toggleSort`, estado em `localStorage` `colherada-sort`): **"Por tipo"**
+(padrão: agrupa por refeição, Café → Almoço → Jantar → Lanche → Sobremesa) ou **"Mais recentes"**
+(ordena por `id` decrescente — o seed cresce na ordem de inclusão; receita criada no app usa
+`Date.now()`). Receita antiga atualizada no lugar mantém o id e não sobe. Os chips filtram; o botão
+só ordena.
 
 ## Validação
 

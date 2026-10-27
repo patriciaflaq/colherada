@@ -25,9 +25,11 @@ Valem para toda receita, sem exceção, tanto em receitas novas quanto em ediç�
 - **Receita sem rendimento confiável** (massa que rende "umas tantas unidades", ex.: esfiha):
   macros pela receita inteira ÷ peso total depois de assar (~20% de perda), aplicados a uma
   porção-padrão em gramas declarada na nota ("Porção = 1 esfiha média (~60g)").
-- **Adoçantes:** apenas alulose, monk fruit e stevia. Nenhum outro.
-  Exceções aprovadas por Patricia: **196 (Camembert Assado com Figos e Prosciutto)** leva mel e **209 (Frango
-  General Tso)** leva mel e molho hoisin — as duas com `strict:false`.
+- **Açúcar:** usar adoçante aprovado (alulose, monk fruit ou stevia, sem sucralose nem aspartame)
+  quando a troca não muda a receita. Quando o açúcar, o mel ou a fruta seca for o que faz a receita
+  funcionar, manter o ingrediente real, sem flag e sem justificativa. A tag `sem-acucar` só vai em
+  receita sem açúcar adicionado. O app não promete receitas sem açúcar (decisão de Patricia,
+  27/out/2026); o antigo campo `strict` foi removido.
 - **Terminologia: "maple syrup", nunca "xarope de bordo".** Nos campos em português
   (`name`, `notes`, `ingredients`, `steps`) e no texto de UI, o termo é "maple syrup", igual ao
   inglês ("Maple syrup" no começo de frase). Vale também para "xarope de ácer/acer" e para
@@ -101,10 +103,7 @@ Refeição (`meal`, ex.: Lanche) continua sendo campo próprio, não tag.
 calculados e exibidos sempre (não precisa ser "saudável" pra ter macro), e as regras de
 alho da seção acima.
 
-**Regras condicionais** (só quando a receita não é marcada como `tradicional`/não-estrita):
-- Adoçante aprovado (alulose/monk fruit/stevia puros) é a regra padrão.
-- Campo `strict:false` libera uso de mel/açúcar real quando o sabor depende disso (ex.:
-  molhos com mel como ingrediente principal).
+A regra de açúcar vale igual para toda receita, com ou sem tag (ver Regras permanentes).
 
 ## Produtos de referência aprovados
 
@@ -151,7 +150,7 @@ aproximados (`macro-note` no detalhe; `macro-note-short` no card JPG e no Compar
 |---|---|
 | id de receita | **220** |
 | `SEED_VERSION` | **61** |
-| `CACHE_NAME` | **v73** |
+| `CACHE_NAME` | **v74** |
 
 Atualizar esta tabela junto com cada receita inserida.
 
@@ -164,7 +163,7 @@ fica lá para sempre.
 
 O que a atualização sobrescreve são os campos de autoria do seed, listados em `SEED_OWNED`:
 `name`, `emoji`, `meal`, `diet`, `time`, `servings`, `notes`, `url`, `source`, os macros,
-`ingredients`, `steps`, os campos `_en`, `tags` e `strict`.
+`ingredients`, `steps`, os campos `_en` e `tags`.
 
 O que ela nunca toca:
 
@@ -194,7 +193,7 @@ a cópia dele fica). Id retirado nunca é reaproveitado. Retiradas até agora: 1
 São dois contadores separados, com propósitos diferentes: `SEED_VERSION` controla o merge
 de receitas novas no `localStorage` de quem já usa o app, `CACHE_NAME` invalida o cache do
 service worker. Cada um sobe pelos seus próprios motivos e eles **não devem ser alinhados**.
-Hoje estão em 60 e v72. Divergirem é o esperado, não é bug — não "corrigir".
+Hoje estão em 60 e v73. Divergirem é o esperado, não é bug — não "corrigir".
 
 ## Modo Cozinha Combinado
 

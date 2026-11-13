@@ -151,7 +151,7 @@ aproximados (`macro-note` no detalhe; `macro-note-short` no card JPG e no Compar
 |---|---|
 | id de receita | **265** |
 | `SEED_VERSION` | **63** |
-| `CACHE_NAME` | **v78** |
+| `CACHE_NAME` | **v79** |
 
 Atualizar esta tabela junto com cada receita inserida.
 
@@ -195,7 +195,7 @@ devolver uma receita, tirar o id do `RETIRED_SEEDS` e subir o `v`.
 São dois contadores separados, com propósitos diferentes: `SEED_VERSION` controla o merge
 de receitas novas no `localStorage` de quem já usa o app, `CACHE_NAME` invalida o cache do
 service worker. Cada um sobe pelos seus próprios motivos e eles **não devem ser alinhados**.
-Hoje estão em 62 e v77. Divergirem é o esperado, não é bug — não "corrigir".
+Hoje estão em 62 e v78. Divergirem é o esperado, não é bug — não "corrigir".
 
 ## Modo Cozinha Combinado
 

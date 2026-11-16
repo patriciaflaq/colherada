@@ -2283,19 +2283,32 @@ function isSectionHeader(txt){
   return false;
 }
 
-function addToShoppingList(id){
+function addToShoppingList(id,opts){
   const r=recipes.find(x=>x.id===id);if(!r)return;
   const ings=(rIngredients(r)||[]).filter(i=>!isSectionHeader(i));
   if(!ings.length)return;
+  // porções escolhidas no detalhe: a lista guarda o texto original e escala na exibição
+  const cnt=document.getElementById('servings-count');
+  const chosen=(opts&&opts.servings)||(cnt&&lastDetailId===id&&parseInt(cnt.textContent))||r.servings||null;
+  const mult=chosen&&r.servings?chosen/r.servings:1;
   const existing=shoppingList.find(s=>s.recipeId===id);
-  if(existing){showToast(lang==='pt'?'Receita já está na lista!':'Recipe already in list!');return;}
-  shoppingList.push({recipeId:id,recipeName:rName(r),emoji:r.emoji||'🍴',items:ings.map(ing=>({text:ing,checked:false}))});
+  if(existing){
+    if((existing.mult||1)!==mult){
+      existing.mult=mult;existing.servings=chosen;
+      save();showToast(lang==='pt'?'Porções atualizadas na lista!':'Servings updated in list!');return;
+    }
+    showToast(lang==='pt'?'Receita já está na lista!':'Recipe already in list!');return;
+  }
+  shoppingList.push({recipeId:id,recipeName:rName(r),emoji:r.emoji||'🍴',mult,servings:chosen,items:ings.map(ing=>({text:ing,checked:false}))});
   save();showToast(t('shopping-added'));
 }
+// texto do item já escalado pelas porções da receita na lista (e convertido no modo imperial)
+const shopItemText=(src,text)=>splitAmount(text,src.mult||1).replace(/<\/?q>/g,'');
+const shopTitle=src=>`${src.emoji} ${src.recipeName}${(src.mult||1)!==1&&src.servings?` · ${src.servings} ${lang==='pt'?(src.servings>1?'porções':'porção'):(src.servings>1?'servings':'serving')}`:''}`;
 
 function generateShoppingFromPlanner(){
   const allMeals=[...new Set(Object.values(planner).flat())];
-  allMeals.forEach(name=>{const r=recipes.find(x=>x.name===name);if(r)addToShoppingList(r.id);});
+  allMeals.forEach(name=>{const r=recipes.find(x=>x.name===name);if(r)addToShoppingList(r.id,{servings:r.servings});});
   showView('shopping',null);
   setActiveNav('nav-shopping');
 }
@@ -2344,6 +2357,7 @@ function consolidateShopping(){
       const txt=item.text.trim();
       if(/^[A-ZÀ-Ú\s]+:$/.test(txt)) return;                 // cabeçalho de bloco
       const p=parseQty(txt);
+      if(p.qty!==null) p.qty*=src.mult||1;
       const key=normName(p.name)+'|'+p.unit;
       if(!key.startsWith('|')&&!map.has(key)) map.set(key,{qty:0,unit:p.unit,name:p.name,refs:[],noQty:false});
       const e=map.get(key)||map.set(key,{qty:0,unit:p.unit,name:p.name,refs:[],noQty:false}).get(key);
@@ -2375,11 +2389,11 @@ function renderShoppingList(){
   if(shoppingMode==='byrecipe'){
     content.innerHTML=shoppingList.map(sc=>`
       <div class="shopping-section">
-        <div class="shopping-section-title">${sc.emoji} ${sc.recipeName}</div>
+        <div class="shopping-section-title">${shopTitle(sc)}</div>
         ${sc.items.map((item,i)=>`
           <div class="shopping-item${item.checked?' checked':''}" onclick="toggleShoppingItem(${sc.recipeId},${i})">
             <div class="shopping-checkbox">${item.checked?'✓':''}</div>
-            <div class="shopping-item-text">${dispIng(item.text)}</div>
+            <div class="shopping-item-text">${shopItemText(sc,item.text)}</div>
           </div>`).join('')}
       </div>`).join('');
     return;
@@ -2421,7 +2435,7 @@ function clearShoppingList(){if(!confirm(t('clear-shopping')))return;shoppingLis
 
 async function shareShoppingList(){
   if(!shoppingList.length)return;
-  const text=shoppingList.map(s=>`${s.emoji} ${s.recipeName}\n${s.items.map(i=>(i.checked?'✓ ':'• ')+dispIng(i.text)).join('\n')}`).join('\n\n');
+  const text=shoppingList.map(s=>`${shopTitle(s)}\n${s.items.map(i=>(i.checked?'✓ ':'• ')+shopItemText(s,i.text)).join('\n')}`).join('\n\n');
   if(navigator.share){try{await navigator.share({title:t('shopping-title'),text});}catch(e){}}
   else{await navigator.clipboard.writeText(text);showToast('Copied! 📋');}
 }

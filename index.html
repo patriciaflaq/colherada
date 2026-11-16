@@ -1929,18 +1929,46 @@ function openDetail(id){
 // destaca a quantidade no início do ingrediente e escala pelo multiplicador
 const UNITS=new Set(['g','kg','mg','ml','l','xícara','xícaras','xicara','xicaras','colher','colheres','scoop','scoops','lata','latas','pitada','pitadas','dente','dentes','fatia','fatias','ramo','ramos','talo','talos',
   'tsp','tbsp','cup','cups','clove','cloves','slice','slices','pinch','can','cans']);
+// quantidade escrita em fração ("1/2", "½", "1 1/2") escala e volta em fração: 1 1/2 × 3 = "4 1/2"
+function parseQtyStr(x){
+  x = x.trim(); const fr = {'½':.5,'⅓':1/3,'⅔':2/3,'¼':.25,'¾':.75,'⅛':.125};
+  const mx = x.match(/^(\d+)\s+(\d+)\/(\d+)$/); if (mx) return +mx[1] + mx[2]/mx[3];
+  const f = fr[x.slice(-1)]; if (f !== undefined) return (x.length > 1 ? parseFloat(x.slice(0,-1)) : 0) + f;
+  if (x.includes('/')) { const pr=x.split('/'); return parseFloat(pr[0])/parseFloat(pr[1]); }
+  return parseFloat(x.replace(',', '.'));
+}
+function fmtFrac(v){
+  const FR = [[0,''],[1/4,'1/4'],[1/3,'1/3'],[1/2,'1/2'],[2/3,'2/3'],[3/4,'3/4'],[1,'']];
+  let w = Math.floor(v), best = FR[0];
+  FR.forEach(f => { if (Math.abs(v-w-f[0]) < Math.abs(v-w-best[0])) best = f; });
+  if (best[0] === 1) { w += 1; best = FR[0]; }
+  return w && best[1] ? `${w} ${best[1]}` : (best[1] || String(w));
+}
+const isFracStr = x => /[\/½⅓⅔¼¾⅛]/.test(x);
+// g/kg/ml/l ficam em decimal; colher, xícara e contagem ("2 ovos") voltam em fração
+const fmtScaled = (orig, v, unit) => (isFracStr(orig) || !/^(g|kg|ml|l)$/i.test(unit||'')) ? fmtFrac(v) : String(Math.round(v*100)/100);
+// medida entre parênteses ("(1 1/2 colher de chá)", "(~200g)") escala junto com a principal;
+// fica de fora o que é por unidade, tempo, temperatura ou porcentagem
+const PAREN_QTY = /\((~\s?)?((?:\d+\s+\d+\/\d+|\d+(?:[.,]\d+)?(?:\/\d+)?[½⅓⅔¼¾⅛]?|[½⅓⅔¼¾⅛])(?:\s*[-–]\s*(?:\d+(?:[.,]\d+)?))?)(\s*)((?:tsp|tbsp|cups?|col|colher|colheres|xícaras?|scoops?|g|kg|ml|l|unidades?|potes?|jars?|latas?|tins?|talos|stalks|medium|média|heads)(?![a-zA-ZÀ-ú])[^)]*)\)/g;
+function scaleParens(text, mult){
+  if (mult === 1) return text;
+  return text.replace(PAREN_QTY, (m, til, num, sp, rest) => {
+    if (/cada|each|por |per |°|%|\bmin|\+/i.test(rest)) return m;
+    const parts = num.split(/\s*[-–]\s*/), vals = parts.map(parseQtyStr);
+    if (!vals.every(isFinite)) return m;
+    const u = (rest.match(/^[a-zA-ZÀ-ú]+/)||[''])[0];
+    return `(${til||''}${vals.map((v,i)=>fmtScaled(parts[i], v*mult, u)).join('-')}${sp}${rest})`;
+  });
+}
 function splitAmount(text, mult){
   // aceita intervalo no início ("300-350ml"): as duas pontas escalam e convertem juntas
-  const out = text.replace(/^((?:\d+(?:[.,\/]\d+)?[½⅓⅔¼¾⅛]?|[½⅓⅔¼¾⅛])(?:\s*[-–]\s*\d+(?:[.,]\d+)?)?)(\s*)([a-zA-ZçãéêíóúÀ-ú]*)((?:\s+de\s+(?:sopa|chá|cha|café|cafe|sobremesa)(?![a-zA-ZÀ-ú]))?)/, (m, num, sp, unit, sub) => {
-    const parse = x => { const fr = {'½':.5,'⅓':1/3,'⅔':2/3,'¼':.25,'¾':.75,'⅛':.125}; const f = fr[x.slice(-1)];
-      if (f !== undefined) return (x.length > 1 ? parseFloat(x.slice(0,-1)) : 0) + f;
-      if (x.includes('/')) { const pr=x.split('/'); return parseFloat(pr[0])/parseFloat(pr[1]); } return parseFloat(x.replace(',', '.')); };
-    const vals = num.split(/\s*[-–]\s*/).map(parse);
+  const out = scaleParens(text, mult).replace(/^((?:\d+(?:[.,\/]\d+)?[½⅓⅔¼¾⅛]?|[½⅓⅔¼¾⅛])(?:\s*[-–]\s*\d+(?:[.,]\d+)?)?)(\s*)([a-zA-ZçãéêíóúÀ-ú]*)((?:\s+de\s+(?:sopa|chá|cha|café|cafe|sobremesa)(?![a-zA-ZÀ-ú]))?)/, (m, num, sp, unit, sub) => {
+    const parts = num.split(/\s*[-–]\s*/), vals = parts.map(parseQtyStr);
     if (!vals.every(isFinite)) return m;
     const sc = vals.map(v => Math.round(v*mult*100)/100);
     const u = (unit||'').toLowerCase();
     if (units==='imperial' && METRIC_TO_IMP[u]) return `<q>${sc.map(METRIC_TO_IMP[u]).join('–')}</q>`;
-    const n = mult === 1 ? num : sc.join('-');
+    const n = mult === 1 ? num : vals.map((v,i)=>fmtScaled(parts[i], v*mult, u)).join('-');
     if (unit && UNITS.has(u)) return `<q>${n}${sp}${unit}${sub}</q>`;
     return `<q>${n}</q>${sp}${unit}${sub}`;
   });

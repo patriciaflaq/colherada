@@ -111,7 +111,7 @@ A regra de açúcar vale igual para toda receita, com ou sem tag (ver Regras per
 **Marcas não aparecem no texto das receitas** (decisão de Patricia, 21/out/2026): usar o termo
 genérico ("iogurte grego desnatado", "cottage light", "whey protein isolado de baunilha", "leite
 desnatado com mais proteína", "colágeno sem sabor"...), porque nem todo mundo acha a marca. Ficam
-com nome: **Philadelphia, Callebaut, PB2 e Boursin**; máquina de sorvete como "tipo Ninja Creami".
+com nome: **Philadelphia, Callebaut, PB2, Boursin, Sweet Thins (Simple Mills) e Oreo**; máquina de sorvete como "tipo Ninja Creami".
 Whey e colágeno vão só em gramas, sem scoops (o tamanho do scoop muda de marca para marca). Os
 produtos abaixo seguem como **referência para calcular os macros**. Por isso o app avisa que os macros são
 aproximados (`macro-note` no detalhe; `macro-note-short` no card JPG e no Compartilhar).
@@ -149,9 +149,9 @@ aproximados (`macro-note` no detalhe; `macro-note-short` no card JPG e no Compar
 
 | | Próximo |
 |---|---|
-| id de receita | **280** |
-| `SEED_VERSION` | **64** |
-| `CACHE_NAME` | **v84** |
+| id de receita | **287** |
+| `SEED_VERSION` | **65** |
+| `CACHE_NAME` | **v85** |
 
 Atualizar esta tabela junto com cada receita inserida.
 
@@ -186,7 +186,7 @@ primeiro load sobrescreveria tudo de uma vez.
 
 Apagar a linha do `SEED_RECIPES` e a entrada em `NAMES`, e pôr o id em `RETIRED_SEEDS`. No
 próximo load ela some também de quem já tinha, **menos** se o usuário editou ou favoritou (aí
-a cópia dele fica). Id retirado nunca é reaproveitado. Retirada até agora: 168 (duplicada). A 108 chegou a ser
+a cópia dele fica). Id retirado nunca é reaproveitado. Retiradas até agora: 168 (duplicada) e 271 (Pãezinhos de Canela, por ter uma semelhante; decisão de Patricia, 19/nov/2026). A 108 chegou a ser
 retirada (incompleta) e voltou completa no mesmo id, com `v:2`, por decisão de Patricia: para
 devolver uma receita, tirar o id do `RETIRED_SEEDS` e subir o `v`.
 
@@ -195,7 +195,7 @@ devolver uma receita, tirar o id do `RETIRED_SEEDS` e subir o `v`.
 São dois contadores separados, com propósitos diferentes: `SEED_VERSION` controla o merge
 de receitas novas no `localStorage` de quem já usa o app, `CACHE_NAME` invalida o cache do
 service worker. Cada um sobe pelos seus próprios motivos e eles **não devem ser alinhados**.
-Hoje estão em 63 e v83. Divergirem é o esperado, não é bug — não "corrigir".
+Hoje estão em 64 e v84. Divergirem é o esperado, não é bug — não "corrigir".
 
 ## Modo Cozinha Combinado
 
